@@ -4,14 +4,15 @@
 EditorSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 12
+  m_ExternalVersionControlSupport: Visible Meta Files
   m_SerializationMode: 2
   m_LineEndingsForNewScripts: 2
   m_DefaultBehaviorMode: 0
   m_PrefabRegularEnvironment: {fileID: 0}
   m_PrefabUIEnvironment: {fileID: 0}
   m_SpritePackerMode: 0
-  m_SpritePackerCacheSize: 10
   m_SpritePackerPaddingPower: 1
+  m_SpritePackerCacheSize: 10
   m_Bc7TextureCompressor: 0
   m_EtcTextureCompressorBehavior: 1
   m_EtcTextureFastCompressor: 1
@@ -45,3 +46,5 @@ EditorSettings:
   m_CacheServerValidationMode: 2
   m_CacheServerDownloadBatchSize: 128
   m_EnableEnlightenBakedGI: 0
+  m_CollabEditorSettings:
+    inProgressEnabled: 1
