@@ -25,7 +25,7 @@ public class BattleSystem : MonoBehaviour
     private bool botHasHealed = false;  
 
     // Reference to UI Text (or TextMeshProUGUI)
-    public TextMeshProUGUI messageText; // Uncomment if using TextMeshPro
+    public TextMeshProUGUI messageText; // Uncomment if using TextMeshPro1
 
     void Start()
     {
