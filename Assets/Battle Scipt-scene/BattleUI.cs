@@ -54,6 +54,8 @@ public class BattleUI : MonoBehaviour
 
     void Update()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         if (battleSystem != null)
         {
             chargeAttackButton.gameObject.SetActive(battleSystem.chargeAttackAvailable);

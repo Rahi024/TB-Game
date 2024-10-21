@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI; // If using Text
 using TMPro;          // If using TextMeshProUGUI
+using UnityEngine.SceneManagement;
 
 public class BattleSystem : MonoBehaviour
 {
@@ -261,10 +262,13 @@ public class BattleSystem : MonoBehaviour
         }
         else if (bot.Health <= 0)
         {
+            
             bot.Health = 0; // Ensure health is set to zero if it goes below
             DisplayMessage("Bot Lost The Battle!");
             battleOver = true;
             FindObjectOfType<BattleUI>().UpdateHealthSliders();  // Ensure slider is updated
+            SceneManager.LoadScene("scene2");  // Load win scene
+            
         }
     }
 }
