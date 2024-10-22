@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI; 
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -73,9 +73,9 @@ public class BattleSystem : MonoBehaviour
 
     public IEnumerator PlayerHeal()
     {
-        if (playerTurn && !battleOver && playerHealCounter < 2)
+        if (playerTurn && !battleOver && playerHealCounter < 2 && player.Health < player.maxHealth)
         {
-            player.Heal(30);
+            player.Heal(30); // Heal 30 points
             DisplayMessage("Player healed by 30 health.");
             yield return new WaitForSeconds(1f);  
             DisplayMessage($"Player's Current Health: {player.Health}");
@@ -83,6 +83,11 @@ public class BattleSystem : MonoBehaviour
             CheckBattleOutcome();
             FindObjectOfType<BattleUI>().UpdateHealthSliders();  
             playerTurn = false;
+        }
+        else if (player.Health >= player.maxHealth)
+        {
+            DisplayMessage("Player is already at full health!");
+            yield return new WaitForSeconds(1f);
         }
         else
         {
@@ -156,23 +161,6 @@ public class BattleSystem : MonoBehaviour
             chargeAttackAvailable = true;
             DisplayMessage("Player's Charge attack is now available!");
             yield return new WaitForSeconds(1f);
-        }
-
-        // Random chance to return attacks
-        if (player.attack2Used && Random.value > 0.7f)
-        {
-            player.attack2Used = false;
-            DisplayMessage("Attack 2 has returned!");
-        }
-        if (player.attack3Used && Random.value > 0.7f)
-        {
-            player.attack3Used = false;
-            DisplayMessage("Attack 3 has returned!");
-        }
-        if (player.attack4Used && Random.value > 0.7f)
-        {
-            player.attack4Used = false;
-            DisplayMessage("Attack 4 has returned!");
         }
 
         CheckBattleOutcome();
@@ -296,6 +284,7 @@ public class BattleSystem : MonoBehaviour
             DisplayMessage("Player Lost The Battle!");
             battleOver = true;
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
+            SceneManager.LoadScene("scene1");
         }
         else if (bot.Health <= 0)
         {
