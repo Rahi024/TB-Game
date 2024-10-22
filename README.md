@@ -1,4 +1,5 @@
 How to Play
+
 This is a turn-based battle game where the player faces off against a bot in a tactical fight. Both players can attack, heal, and charge up for powerful moves. Your goal is to find the keys to unlock the the boss and defeat them to move over to the next level.
 
 Each Level would involve you needing to find 3 different keys before you are able to fight the boss in order to move to the next level. As the level progress, the keys will be much harder to find and the boss difficulty will increase.
