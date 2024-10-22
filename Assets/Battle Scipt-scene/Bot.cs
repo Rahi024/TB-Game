@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class Bot : MonoBehaviour
 {
-    public int Health = 100;
-    public int AttackDamage = 15;
-    public int SecondAttackDamage = 20;
-    public int ThirdAttackDamage = 25;
-    public int FourthAttackDamage = 30;
-    public int ChargeAttackDamage = 40;  
+    public int Health = 200;
+    public int AttackDamage = 20;
+    public int SecondAttackDamage = 30;
+    public int ThirdAttackDamage = 35;
+    public int FourthAttackDamage = 40;
+    public int ChargeAttackDamage = 45;  
 
     public void Attack(Player player)
     {

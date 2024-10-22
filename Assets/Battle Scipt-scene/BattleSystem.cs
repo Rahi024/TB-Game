@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI; // If using Text
-using TMPro;          // If using TextMeshProUGUI
+using UnityEngine.UI; 
+using TMPro;
 using UnityEngine.SceneManagement;
 
 public class BattleSystem : MonoBehaviour
@@ -12,21 +12,17 @@ public class BattleSystem : MonoBehaviour
     public bool playerTurn = true;  
     private bool battleOver = false;
 
-    // Player charge attack variables
     private int normalAttackCounter = 0; 
     public bool chargeAttackAvailable = false;  
 
-    // Bot charge attack variables
     private int botNormalAttackCounter = 0;
     public bool botChargeAttackAvailable = false;
 
-    // Healing variables
     public int playerHealCounter = 0;  
     public int botHealCounter = 0;     
     private bool botHasHealed = false;  
 
-    // Reference to UI Text (or TextMeshProUGUI)
-    public TextMeshProUGUI messageText; // Uncomment if using TextMeshPro1
+    public TextMeshProUGUI messageText; 
 
     void Start()
     {
@@ -75,13 +71,13 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    public IEnumerator PlayerHeal()  // Changed from void to IEnumerator
+    public IEnumerator PlayerHeal()
     {
-        if (playerTurn && !battleOver && playerHealCounter < 2)  
+        if (playerTurn && !battleOver && playerHealCounter < 2)
         {
-            player.Heal(30);  
+            player.Heal(30);
             DisplayMessage("Player healed by 30 health.");
-            yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+            yield return new WaitForSeconds(1f);  
             DisplayMessage($"Player's Current Health: {player.Health}");
             playerHealCounter++; 
             CheckBattleOutcome();
@@ -91,7 +87,7 @@ public class BattleSystem : MonoBehaviour
         else
         {
             DisplayMessage("Player has no more heals available!");
-            yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+            yield return new WaitForSeconds(1f);  
         }
     }
 
@@ -101,31 +97,55 @@ public class BattleSystem : MonoBehaviour
         {
             case 1:
                 DisplayMessage("Player uses Attack 1!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+                yield return new WaitForSeconds(1f);
                 player.Attack(bot);
                 DisplayMessage($"Bot takes {player.AttackDamage} damage. Bot's Current Health: {bot.Health}");
                 break;
             case 2:
-                DisplayMessage("Player uses Attack 2!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
-                player.SecondAttack(bot);
-                DisplayMessage($"Bot takes {player.SecondAttackDamage} damage. Bot's Current Health: {bot.Health}");
+                if (!player.attack2Used)
+                {
+                    DisplayMessage("Player uses Attack 2!");
+                    yield return new WaitForSeconds(1f);
+                    player.SecondAttack(bot);
+                    DisplayMessage($"Bot takes {player.SecondAttackDamage} damage. Bot's Current Health: {bot.Health}");
+                    player.attack2Used = true;
+                }
+                else
+                {
+                    DisplayMessage("Attack 2 is not available.");
+                }
                 break;
             case 3:
-                DisplayMessage("Player uses Attack 3!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
-                player.ThirdAttack(bot);
-                DisplayMessage($"Bot takes {player.ThirdAttackDamage} damage. Bot's Current Health: {bot.Health}");
+                if (!player.attack3Used)
+                {
+                    DisplayMessage("Player uses Attack 3!");
+                    yield return new WaitForSeconds(1f);
+                    player.ThirdAttack(bot);
+                    DisplayMessage($"Bot takes {player.ThirdAttackDamage} damage. Bot's Current Health: {bot.Health}");
+                    player.attack3Used = true;
+                }
+                else
+                {
+                    DisplayMessage("Attack 3 is not available.");
+                }
                 break;
             case 4:
-                DisplayMessage("Player uses Attack 4!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
-                player.FourthAttack(bot);
-                DisplayMessage($"Bot takes {player.FourthAttackDamage} damage. Bot's Current Health: {bot.Health}");
+                if (!player.attack4Used)
+                {
+                    DisplayMessage("Player uses Attack 4!");
+                    yield return new WaitForSeconds(1f);
+                    player.FourthAttack(bot);
+                    DisplayMessage($"Bot takes {player.FourthAttackDamage} damage. Bot's Current Health: {bot.Health}");
+                    player.attack4Used = true;
+                }
+                else
+                {
+                    DisplayMessage("Attack 4 is not available.");
+                }
                 break;
             default:
                 DisplayMessage("Unknown Attack!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+                yield return new WaitForSeconds(1f);
                 break;
         }
 
@@ -135,7 +155,24 @@ public class BattleSystem : MonoBehaviour
         {
             chargeAttackAvailable = true;
             DisplayMessage("Player's Charge attack is now available!");
-            yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+            yield return new WaitForSeconds(1f);
+        }
+
+        // Random chance to return attacks
+        if (player.attack2Used && Random.value > 0.7f)
+        {
+            player.attack2Used = false;
+            DisplayMessage("Attack 2 has returned!");
+        }
+        if (player.attack3Used && Random.value > 0.7f)
+        {
+            player.attack3Used = false;
+            DisplayMessage("Attack 3 has returned!");
+        }
+        if (player.attack4Used && Random.value > 0.7f)
+        {
+            player.attack4Used = false;
+            DisplayMessage("Attack 4 has returned!");
         }
 
         CheckBattleOutcome();
@@ -150,30 +187,30 @@ public class BattleSystem : MonoBehaviour
     IEnumerator PlayerChargeAttackTurn()
     {
         DisplayMessage("Player uses Charge Attack!");
-        yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
-        player.ChargeAttack(bot);  
+        yield return new WaitForSeconds(1f);
+        player.ChargeAttack(bot);
         DisplayMessage($"Bot takes {player.ChargeAttackDamage} damage. Bot's Current Health: {bot.Health}");
-        chargeAttackAvailable = false;  
-        normalAttackCounter = 0;  
+        chargeAttackAvailable = false;
+        normalAttackCounter = 0;
 
         CheckBattleOutcome();
         yield return new WaitForSeconds(1f);
 
         if (!battleOver)
         {
-            playerTurn = false;  
+            playerTurn = false;
         }
     }
 
     IEnumerator BotTurn()
     {
-        if (botHealCounter < 2 && bot.Health <= 30 && !botHasHealed)  
+        if (botHealCounter < 2 && bot.Health <= 30 && !botHasHealed)
         {
-            bot.Heal(30);  
+            bot.Heal(30);
             DisplayMessage("Bot healed by 30 health.");
-            yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+            yield return new WaitForSeconds(1f);
             DisplayMessage($"Bot's Current Health: {bot.Health}");
-            botHealCounter++; 
+            botHealCounter++;
             botHasHealed = true;
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
         }
@@ -182,69 +219,69 @@ public class BattleSystem : MonoBehaviour
             if (Random.value > 0.1f)
             {
                 DisplayMessage("Bot uses Charge Attack!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+                yield return new WaitForSeconds(1f);
                 bot.ChargeAttack(player);
                 DisplayMessage($"Player takes {bot.ChargeAttackDamage} damage. Player's Current Health: {player.Health}");
-                FindObjectOfType<BattleUI>().UpdateHealthSliders();  
+                FindObjectOfType<BattleUI>().UpdateHealthSliders();
                 botChargeAttackAvailable = false;
                 botNormalAttackCounter = 0;
             }
             else
             {
-                int randomAttack = Random.Range(1, 5);  
-                yield return PerformBotRandomAttack(randomAttack);  // Change to yield return
+                int randomAttack = Random.Range(1, 5);
+                yield return PerformBotRandomAttack(randomAttack);
             }
         }
         else
         {
-            int randomAttack = Random.Range(1, 5);  
-            yield return PerformBotRandomAttack(randomAttack);  // Change to yield return
+            int randomAttack = Random.Range(1, 5);
+            yield return PerformBotRandomAttack(randomAttack);
         }
 
-        botNormalAttackCounter++;  
+        botNormalAttackCounter++;
 
-        if (botNormalAttackCounter >= 3)  
+        if (botNormalAttackCounter >= 3)
         {
             botChargeAttackAvailable = true;
             DisplayMessage("Bot's Charge attack is now available!");
-            yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+            yield return new WaitForSeconds(1f);
         }
 
         CheckBattleOutcome();
-        yield return new WaitForSeconds(1f);  
+        yield return new WaitForSeconds(1f);
     }
 
-    IEnumerator PerformBotRandomAttack(int attackType)  // Changed from void to IEnumerator
+    IEnumerator PerformBotRandomAttack(int attackType)
     {
         switch (attackType)
         {
             case 1:
                 DisplayMessage("Bot uses Attack 1!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+                yield return new WaitForSeconds(1f);
                 bot.Attack(player);
                 DisplayMessage($"Player takes {bot.AttackDamage} damage. Player's Current Health: {player.Health}");
                 break;
             case 2:
                 DisplayMessage("Bot uses Attack 2!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+                yield return new WaitForSeconds(1f);
                 bot.SecondAttack(player);
                 DisplayMessage($"Player takes {bot.SecondAttackDamage} damage. Player's Current Health: {player.Health}");
                 break;
             case 3:
                 DisplayMessage("Bot uses Attack 3!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+                yield return new WaitForSeconds(1f);
                 bot.ThirdAttack(player);
                 DisplayMessage($"Player takes {bot.ThirdAttackDamage} damage. Player's Current Health: {player.Health}");
                 break;
             case 4:
                 DisplayMessage("Bot uses Attack 4!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+                yield return new WaitForSeconds(1f);
                 bot.FourthAttack(player);
                 DisplayMessage($"Player takes {bot.FourthAttackDamage} damage. Player's Current Health: {player.Health}");
                 break;
             default:
                 DisplayMessage("Unknown Bot Attack!");
-                yield return new WaitForSeconds(1f);  // Add delay to allow this message to be shown
+                yield return new WaitForSeconds(1f);
                 break;
         }
 
@@ -255,20 +292,18 @@ public class BattleSystem : MonoBehaviour
     {
         if (player.Health <= 0)
         {
-            player.Health = 0; // Ensure health is set to zero if it goes below
+            player.Health = 0;
             DisplayMessage("Player Lost The Battle!");
             battleOver = true;
-            FindObjectOfType<BattleUI>().UpdateHealthSliders();  // Ensure slider is updated
+            FindObjectOfType<BattleUI>().UpdateHealthSliders();
         }
         else if (bot.Health <= 0)
         {
-            
-            bot.Health = 0; // Ensure health is set to zero if it goes below
+            bot.Health = 0;
             DisplayMessage("Bot Lost The Battle!");
             battleOver = true;
-            FindObjectOfType<BattleUI>().UpdateHealthSliders();  // Ensure slider is updated
-            SceneManager.LoadScene("scene2");  // Load win scene
-            
+            FindObjectOfType<BattleUI>().UpdateHealthSliders();
+            SceneManager.LoadScene("scene2");
         }
     }
 }
