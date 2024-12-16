@@ -27,9 +27,16 @@ public class BattleSystem : MonoBehaviour
 
     public TextMeshProUGUI messageText; 
 
+    public GameOverScript gameOverScript;
+
     void Start()
     {
         StartCoroutine(BattleLoop());
+    }
+
+    void Update () {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     void DisplayMessage(string message)
@@ -328,7 +335,7 @@ public class BattleSystem : MonoBehaviour
             DisplayMessage("Player Lost The Battle!");
             battleOver = true;
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
-            SceneManager.LoadScene("scene1");  // Reload the first scene
+            gameOverScript.gameOver();  // Reload the first scene
         }
         else if (bot.Health <= 0)
         {
@@ -338,6 +345,7 @@ public class BattleSystem : MonoBehaviour
             battleOver = true;
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
             SceneManager.LoadScene("scene2");  // Load the victory scene
+            //gameOverScript.gameOver(); // Load the victory scene
         }
     }
 }
