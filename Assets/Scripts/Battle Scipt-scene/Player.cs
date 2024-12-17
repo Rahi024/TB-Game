@@ -17,6 +17,10 @@ public class Player : MonoBehaviour
     public bool attack3Used = false;  
     public bool attack4Used = false;  
 
+    // Shield status
+    public bool shieldActive = false;
+    public float shieldReduction = 0.5f; // 50% damage reduction
+
     // Standard attack method that deals damage to the bot
     public void Attack(Bot bot)
     {
@@ -50,6 +54,11 @@ public class Player : MonoBehaviour
     // Method for taking damage from the bot
     public void TakeDamage(int damage)
     {
+        if (shieldActive)
+        {
+            damage = Mathf.RoundToInt(damage * (1 - shieldReduction));
+            shieldActive = false; // shield lasts only one turn
+        }
         // Reduce player's health by the damage value
         Health -= damage;
         Debug.Log($"Player takes {damage} damage. Current Health: {Health}");

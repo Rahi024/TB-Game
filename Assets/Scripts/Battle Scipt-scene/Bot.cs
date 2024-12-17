@@ -11,6 +11,12 @@ public class Bot : MonoBehaviour
     public int FourthAttackDamage = 40; 
     public int ChargeAttackDamage = 45; 
 
+    // Status effect fields
+    public int burnDamagePerTurn = 0;
+    public int burnDuration = 0;
+    public int poisonDamagePerTurn = 0;
+    public int poisonDuration = 0;
+
     // Basic attack method that reduces the player's health 
     public void Attack(Player player)
     {
@@ -55,5 +61,48 @@ public class Bot : MonoBehaviour
         Health += healAmount;
         if (Health > 100) Health = 100; 
         Debug.Log($"Bot heals for {healAmount}. Current Health: {Health}");
+    }
+
+    public void ApplyBurn(int damage, int duration)
+    {
+        burnDamagePerTurn = damage;
+        burnDuration = duration;
+    }
+
+    public void ApplyPoison(int damage, int duration)
+    {
+        poisonDamagePerTurn = damage;
+        poisonDuration = duration;
+    }
+
+    public void ApplyDotEffects()
+    {
+        int totalDamage = 0;
+
+        if (burnDuration > 0)
+        {
+            totalDamage += burnDamagePerTurn;
+            burnDuration--;
+            if (burnDuration == 0)
+            {
+                burnDamagePerTurn = 0;
+            }
+        }
+
+        if (poisonDuration > 0)
+        {
+            totalDamage += poisonDamagePerTurn;
+            poisonDuration--;
+            if (poisonDuration == 0)
+            {
+                poisonDamagePerTurn = 0;
+            }
+        }
+
+        if (totalDamage > 0)
+        {
+            TakeDamage(totalDamage);
+            Debug.Log($"Bot takes {totalDamage} DOT damage. Current Health: {Health}");
+        }
     }
 }

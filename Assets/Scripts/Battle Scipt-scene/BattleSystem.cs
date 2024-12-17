@@ -25,7 +25,7 @@ public class BattleSystem : MonoBehaviour
     public int botHealCounter = 0;     
     private bool botHasHealed = false;  // Track if bot has healed during the game
 
-    public TextMeshProUGUI messageText; 
+    public TextMeshProUGUI messageText;
 
     public GameOverScript gameOverScript;
 
@@ -54,15 +54,19 @@ public class BattleSystem : MonoBehaviour
         {
             if (playerTurn)
             {
-               
+                // player-based DoTs are applied here. 
+                
                 DisplayMessage("Player turn to select a move!");
                 yield return new WaitUntil(() => !playerTurn);  
             }
             else
             {
+                // Apply DoT effects to the Bot at the start of Bots turn
+                bot.ApplyDotEffects();
+
                 DisplayMessage("Bot turn to select a move!");
                 yield return StartCoroutine(BotTurn());  
-                playerTurn = true;  // After bot finishes, give control back to the player
+                playerTurn = true;  // Give control back to the player after bot move
             }
         }
     }
@@ -118,43 +122,52 @@ public class BattleSystem : MonoBehaviour
         switch (attackType)
         {
             case 1:
-                DisplayMessage("Player uses Attack 1!");
+                // Attack 1: Apply Burn
+                DisplayMessage("Player uses Blaze Overdrive!");
                 yield return new WaitForSeconds(1f);
                 player.Attack(bot);
-                DisplayMessage($"Bot takes {player.AttackDamage} damage. Bot's Current Health: {bot.Health}");
+                // Apply Burn: 5 damage for 3 turns
+                bot.ApplyBurn(5, 3);
+                DisplayMessage($"Bot takes {player.AttackDamage} damage and is burned!");
                 break;
             case 2:
+                // Attack 2: Apply Poison
                 if (!player.attack2Used)
                 {
-                    DisplayMessage("Player uses Attack 2!");
+                    DisplayMessage("Player uses Thorn Slash!");
                     yield return new WaitForSeconds(1f);
                     player.SecondAttack(bot);
-                    DisplayMessage($"Bot takes {player.SecondAttackDamage} damage. Bot's Current Health: {bot.Health}");
+                    // Apply Poison: 3 damage for 5 turns
+                    bot.ApplyPoison(3, 5);
+                    DisplayMessage($"Bot takes {player.SecondAttackDamage} damage and is poisoned!");
                     player.attack2Used = true;  // Mark the attack as used
                 }
                 else
                 {
-                    DisplayMessage("Attack 2 is not available.");
+                    DisplayMessage("Thorn Slash is not available.");
                 }
                 break;
             case 3:
+                // Attack 3: Shield for Player
                 if (!player.attack3Used)
                 {
-                    DisplayMessage("Player uses Attack 3!");
+                    DisplayMessage("Player uses Psycho Rift!");
                     yield return new WaitForSeconds(1f);
                     player.ThirdAttack(bot);
-                    DisplayMessage($"Bot takes {player.ThirdAttackDamage} damage. Bot's Current Health: {bot.Health}");
+                    // Activate Shield on Player
+                    player.shieldActive = true;
+                    DisplayMessage($"Bot takes {player.ThirdAttackDamage} damage. Player is shielded!");
                     player.attack3Used = true;  
                 }
                 else
                 {
-                    DisplayMessage("Attack 3 is not available.");
+                    DisplayMessage("Psycho Rift is not available.");
                 }
                 break;
             case 4:
                 if (!player.attack4Used)
                 {
-                    DisplayMessage("Player uses Attack 4!");
+                    DisplayMessage("Player uses Marina Dash!");
                     yield return new WaitForSeconds(1f);
                     player.FourthAttack(bot);
                     DisplayMessage($"Bot takes {player.FourthAttackDamage} damage. Bot's Current Health: {bot.Health}");
@@ -162,7 +175,7 @@ public class BattleSystem : MonoBehaviour
                 }
                 else
                 {
-                    DisplayMessage("Attack 4 is not available.");
+                    DisplayMessage("Marina Dash is not available.");
                 }
                 break;
             default:
@@ -179,17 +192,17 @@ public class BattleSystem : MonoBehaviour
             if (attackType == 2)
             {
                 player.attack2Used = false;
-                DisplayMessage("Attack 2 has been restored!");
+                DisplayMessage("Thorn Slash has been restored!");
             }
             else if (attackType == 3)
             {
                 player.attack3Used = false;
-                DisplayMessage("Attack 3 has been restored!");
+                DisplayMessage("Psycho Rift has been restored!");
             }
             else if (attackType == 4)
             {
                 player.attack4Used = false;
-                DisplayMessage("Attack 4 has been restored!");
+                DisplayMessage("Marina Dash has been restored!");
             }
         }
 
@@ -200,7 +213,7 @@ public class BattleSystem : MonoBehaviour
         if (normalAttackCounter >= 3)
         {
             chargeAttackAvailable = true;
-            DisplayMessage("Player's Charge attack is now available!");
+            DisplayMessage("Player's Celestial Blast is now available!");
             yield return new WaitForSeconds(1f);
         }
 
@@ -215,7 +228,7 @@ public class BattleSystem : MonoBehaviour
     // Handle player's charge attack
     IEnumerator PlayerChargeAttackTurn()
     {
-        DisplayMessage("Player uses Charge Attack!");
+        DisplayMessage("Player uses Celestial Blast!");
         yield return new WaitForSeconds(1f);
         player.ChargeAttack(bot);  // Perform the charge attack
         DisplayMessage($"Bot takes {player.ChargeAttackDamage} damage. Bot's Current Health: {bot.Health}");
@@ -249,7 +262,7 @@ public class BattleSystem : MonoBehaviour
             // 90% chance for bot to use charge attack when available
             if (Random.value > 0.1f)
             {
-                DisplayMessage("Bot uses Charge Attack!");
+                DisplayMessage("Bot uses Celestial Blast!");
                 yield return new WaitForSeconds(1f);
                 bot.ChargeAttack(player);  // Perform charge attack on player
                 DisplayMessage($"Player takes {bot.ChargeAttackDamage} damage. Player's Current Health: {player.Health}");
@@ -278,7 +291,7 @@ public class BattleSystem : MonoBehaviour
         if (botNormalAttackCounter >= 3)
         {
             botChargeAttackAvailable = true;
-            DisplayMessage("Bot's Charge attack is now available!");
+            DisplayMessage("Bot's Celestial Blast is now available!");
             yield return new WaitForSeconds(1f);
         }
 
