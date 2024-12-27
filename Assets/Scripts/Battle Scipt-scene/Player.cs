@@ -22,33 +22,92 @@ public class Player : MonoBehaviour
     public float shieldReduction = 0.5f; // 50% damage reduction
 
     // Standard attack method that deals damage to the bot
-    public void Attack(Bot bot)
+    public int Attack(Bot bot, out bool isCrit)
     {
-        bot.TakeDamage(AttackDamage);  
+        int baseDamage = AttackDamage;
+        bool critHappened = false;
+
+        // 30% chance to crit
+        if (Random.value < 0.3f)
+        {
+            baseDamage = Mathf.RoundToInt(baseDamage * 1.25f);
+            critHappened = true;
+        }
+
+        // Deal damage
+        bot.TakeDamage(baseDamage);
+
+        // Output parameters
+        isCrit = critHappened;
+        return baseDamage;  // This is the *actual final damage* dealt
     }
 
     // Second attack method
-    public void SecondAttack(Bot bot)
+    public int SecondAttack(Bot bot, out bool isCrit)
     {
-        bot.TakeDamage(SecondAttackDamage);  
+        int baseDamage = SecondAttackDamage;
+        bool critHappened = false;
+
+        if (Random.value < 0.3f)
+        {
+            baseDamage = Mathf.RoundToInt(baseDamage * 1.25f);
+            critHappened = true;
+        }
+
+        bot.TakeDamage(baseDamage);
+        isCrit = critHappened;
+        return baseDamage;
     }
 
     // Third attack method
-    public void ThirdAttack(Bot bot)
+    public int ThirdAttack(Bot bot, out bool isCrit)
     {
-        bot.TakeDamage(ThirdAttackDamage);  
+        int baseDamage = ThirdAttackDamage;
+        bool critHappened = false;
+
+        if (Random.value < 0.3f)
+        {
+            baseDamage = Mathf.RoundToInt(baseDamage * 1.25f);
+            critHappened = true;
+        }
+
+        bot.TakeDamage(baseDamage);
+        isCrit = critHappened;
+        return baseDamage;
     }
 
     // Fourth attack method
-    public void FourthAttack(Bot bot)
+    public int FourthAttack(Bot bot, out bool isCrit)
     {
-        bot.TakeDamage(FourthAttackDamage);  
+        int baseDamage = FourthAttackDamage;
+        bool critHappened = false;
+
+        if (Random.value < 0.3f)
+        {
+            baseDamage = Mathf.RoundToInt(baseDamage * 1.25f);
+            critHappened = true;
+        }
+
+        bot.TakeDamage(baseDamage);
+        isCrit = critHappened;
+        return baseDamage;
     }
 
     // Charge attack method, which is the most powerful attack
-    public void ChargeAttack(Bot bot)
+    public int ChargeAttack(Bot bot, out bool isCrit)
     {
-        bot.TakeDamage(ChargeAttackDamage);  
+        int baseDamage = ChargeAttackDamage;
+        bool critHappened = false;
+
+        if (Random.value < 0.3f)
+        {
+            baseDamage = Mathf.RoundToInt(baseDamage * 1.25f);
+            critHappened = true;
+        }
+
+        bot.TakeDamage(baseDamage);
+        isCrit = critHappened;
+        return baseDamage;
     }
 
     // Method for taking damage from the bot
@@ -57,9 +116,8 @@ public class Player : MonoBehaviour
         if (shieldActive)
         {
             damage = Mathf.RoundToInt(damage * (1 - shieldReduction));
-            shieldActive = false; // shield lasts only one turn
+            shieldActive = false; // shield only lasts for one hit
         }
-        // Reduce player's health by the damage value
         Health -= damage;
         Debug.Log($"Player takes {damage} damage. Current Health: {Health}");
     }
@@ -67,7 +125,6 @@ public class Player : MonoBehaviour
     // Method for healing the player by a specified amount
     public void Heal(int healAmount)
     {
-        // Increase player's health by the heal amount
         Health += healAmount;
         if (Health > maxHealth) Health = maxHealth;
         Debug.Log($"Player heals for {healAmount}. Current Health: {Health}");

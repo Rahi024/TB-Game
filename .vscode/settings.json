@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "TB-Game.sln"
+    "dotnet.defaultSolution": "TBGAME.sln"
 }
