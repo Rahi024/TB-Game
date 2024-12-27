@@ -42,6 +42,12 @@ public class BattleSystem : MonoBehaviour
         ApplyGlobalUpgradesToPlayer();
     }
 
+    void Awake()
+    {
+        // Apply any purchased upgrades before starting the game
+        ApplyGlobalUpgradesToPlayer();
+    }
+
     void Start()
     {
         // 2) Then start the battle loop
