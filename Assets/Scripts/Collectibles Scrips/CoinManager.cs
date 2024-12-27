@@ -25,6 +25,9 @@ public class CoinManager : MonoBehaviour
 
     private void Start()
     {
+        // Load coins from PlayerPrefs at the start of the game
+        LoadCoins();
+
         // Make sure the UI text is correct at the start of the game
         UpdateCoinText();
     }
@@ -36,6 +39,7 @@ public class CoinManager : MonoBehaviour
     public void AddCoins(int amount)
     {
         totalCoins += amount;
+        SaveCoins(); // Save the updated coin count
         UpdateCoinText();
     }
 
@@ -46,6 +50,7 @@ public class CoinManager : MonoBehaviour
     public void RemoveCoins(int amount)
     {
         totalCoins = Mathf.Max(0, totalCoins - amount);
+        SaveCoins(); // Save the updated coin count
         UpdateCoinText();
     }
 
@@ -73,5 +78,23 @@ public class CoinManager : MonoBehaviour
     {
         coinText = newCoinText;
         UpdateCoinText();
+    }
+
+    /// <summary>
+    /// Saves the current totalCoins value to PlayerPrefs for persistence.
+    /// </summary>
+    public void SaveCoins()
+    {
+        PlayerPrefs.SetInt("TotalCoins", totalCoins);
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>
+    /// Loads the totalCoins value from PlayerPrefs.
+    /// If no value exists, initializes to 0.
+    /// </summary>
+    public void LoadCoins()
+    {
+        totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
     }
 }

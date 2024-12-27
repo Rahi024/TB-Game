@@ -7,7 +7,6 @@ public class GlobalUpgrades : MonoBehaviour
     // These fields store the cumulative upgrades purchased in the shop
     public int healthBonus = 0;
     public int attackBonus = 0;
-    // If you want defense or other stats, you can add them here.
 
     private void Awake()
     {
@@ -20,5 +19,18 @@ public class GlobalUpgrades : MonoBehaviour
         {
             Destroy(gameObject); // Only one instance allowed
         }
+    }
+
+    /// <summary>
+    /// Resets all global upgrades to their default values.
+    /// </summary>
+    public void ResetUpgrades()
+    {
+        healthBonus = 0;
+        attackBonus = 0;
+
+        // Optionally clear persistent data if upgrades are saved
+        PlayerPrefs.DeleteKey("HealthBonus");
+        PlayerPrefs.DeleteKey("AttackBonus");
     }
 }

@@ -10,6 +10,18 @@ public class StartGame : MonoBehaviour
         // Delete all saved data for a fresh start
         PlayerPrefs.DeleteAll();
 
+        // Clear coins and global upgrades
+        if (CoinManager.Instance != null)
+        {
+            CoinManager.Instance.totalCoins = 0;
+            CoinManager.Instance.SaveCoins(); // Ensure coins are reset in persistent storage
+        }
+
+        if (GlobalUpgrades.Instance != null)
+        {
+            GlobalUpgrades.Instance.ResetUpgrades(); // Clear all global upgrades
+        }
+
         // Load the first scene (no saved checkpoints since we cleared)
         SceneManager.LoadScene("CutScene");
     }
@@ -30,7 +42,7 @@ public class StartGame : MonoBehaviour
         }
     }
 
-    public void QuitGameButton() 
+    public void QuitGameButton()
     {
         Debug.Log("Game Quit");
         Application.Quit();

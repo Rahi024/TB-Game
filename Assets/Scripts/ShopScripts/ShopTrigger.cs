@@ -3,7 +3,7 @@ using UnityEngine;
 public class ShopTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject shopUI;       // The ShopPanel we want to enable/disable
-    [SerializeField] private GameObject interactPrompt; // A small UI “Press F to open shop” prompt
+    [SerializeField] private GameObject interactPrompt; // A small UI "Press F to open shop" prompt
     [SerializeField] private MonoBehaviour cameraController; // Reference to the camera controller script
 
     private bool isPlayerInside = false;
@@ -17,6 +17,8 @@ public class ShopTrigger : MonoBehaviour
         // Ensure the camera controller is enabled at start
         if (cameraController != null)
             cameraController.enabled = true;
+
+        SetCursorVisible(false); // Ensure cursor starts hidden
     }
 
     private void OnTriggerEnter(Collider other)
@@ -26,6 +28,8 @@ public class ShopTrigger : MonoBehaviour
             isPlayerInside = true;
             if (interactPrompt != null)
                 interactPrompt.SetActive(true);
+
+            Debug.Log("[ShopTrigger] Player entered shop area.");
         }
     }
 
@@ -41,9 +45,12 @@ public class ShopTrigger : MonoBehaviour
             if (shopUI != null)
                 shopUI.SetActive(false);
 
-            // Re-enable the camera controller when exiting
+            // Re-enable the camera controller and hide the cursor when exiting
             if (cameraController != null)
                 cameraController.enabled = true;
+
+            SetCursorVisible(false);
+            Debug.Log("[ShopTrigger] Player exited shop area.");
         }
     }
 
@@ -62,15 +69,21 @@ public class ShopTrigger : MonoBehaviour
                     // Dynamically reassign the coin text reference to CoinManager
                     UpdateCoinTextReferenceInShop();
 
-                    // Disable the camera controller
+                    // Disable the camera controller and show the cursor
                     if (cameraController != null)
                         cameraController.enabled = false;
+
+                    SetCursorVisible(true);
+                    Debug.Log("[ShopTrigger] Shop opened. Cursor enabled.");
                 }
                 else
                 {
-                    // Re-enable the camera controller
+                    // Re-enable the camera controller and hide the cursor
                     if (cameraController != null)
                         cameraController.enabled = true;
+
+                    SetCursorVisible(false);
+                    Debug.Log("[ShopTrigger] Shop closed. Cursor disabled.");
                 }
             }
         }
@@ -86,7 +99,21 @@ public class ShopTrigger : MonoBehaviour
         }
         else
         {
-            Debug.LogError("ShopTrigger: No coinText UI found in shop!");
+            Debug.LogError("[ShopTrigger] No coinText UI found in shop!");
+        }
+    }
+
+    private void SetCursorVisible(bool visible)
+    {
+        if (visible)
+        {
+            Cursor.visible = true; // Makes the cursor visible
+            Cursor.lockState = CursorLockMode.None; // Unlocks the cursor
+        }
+        else
+        {
+            Cursor.visible = false; // Hides the cursor
+            Cursor.lockState = CursorLockMode.Locked; // Locks the cursor
         }
     }
 }
