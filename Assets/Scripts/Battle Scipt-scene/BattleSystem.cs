@@ -29,8 +29,18 @@ public class BattleSystem : MonoBehaviour
 
     public GameOverScript gameOverScript;
 
+    
+
+    void Awake()
+    {
+        // 1) Apply any purchased upgrades here, BEFORE the UI starts
+        ApplyGlobalUpgradesToPlayer();
+    }
+
+
     void Start()
     {
+        // 2) Then start the battle loop
         StartCoroutine(BattleLoop());
     }
 
@@ -38,6 +48,17 @@ public class BattleSystem : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
+
+ private void ApplyGlobalUpgradesToPlayer()
+{
+    // Example if you’re using a GlobalUpgrades singleton
+    if (player != null)
+    {
+        player.maxHealth += GlobalUpgrades.Instance.healthBonus;
+        player.Health = player.maxHealth;  // Start fully healed
+        player.AttackDamage += GlobalUpgrades.Instance.attackBonus;
+    }
+}
 
     void DisplayMessage(string message)
     {

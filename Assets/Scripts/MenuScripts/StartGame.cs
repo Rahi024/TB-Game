@@ -11,7 +11,7 @@ public class StartGame : MonoBehaviour
         PlayerPrefs.DeleteAll();
 
         // Load the first scene (no saved checkpoints since we cleared)
-        SceneManager.LoadScene("scene1");
+        SceneManager.LoadScene("CutScene");
     }
 
     public void LoadGameButton()

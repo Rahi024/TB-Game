@@ -1,22 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ChangeScene_OnKeyPress : MonoBehaviour
 {
-    [SerializeField] private GameObject uiElement; // UI element to show when the player is nearby
-    private keyCounter kc; // Reference to the keyCounter component
+    [SerializeField] private GameObject uiElement; // "Press F to pick up" UI
+    private keyCounter kc; // Reference to the keyCounter in the scene
 
     private void Start()
     {
-        // Find the keyCounter instance in the scene
+        // Find the keyCounter in this scene
         kc = FindObjectOfType<keyCounter>();
-
-        // Optional: Check if kc is assigned correctly
         if (kc == null)
         {
             Debug.LogError("keyCounter instance not found in the scene!");
+        }
+
+        // Hide the UI element initially if it exists
+        if (uiElement != null)
+        {
+            uiElement.SetActive(false);
         }
     }
 
@@ -24,37 +26,38 @@ public class ChangeScene_OnKeyPress : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            uiElement.SetActive(true); // Show the UI element
-            
-            // Check for key press and increment the key count
-            if (Input.GetKeyDown(KeyCode.F))
+            // Show the "Press F" UI
+            if (uiElement != null)
             {
-                if (kc != null) // Check if kc is not null before calling the method
-                {
-                    kc.IncrementKeyCount(); // Call the method to increment key count
+                uiElement.SetActive(true);
+            }
 
-                    // Destroy the parent object (sphere) of this trigger
-                    Destroy(transform.parent.gameObject); // This will destroy the parent object (sphere)
-                    
-                    // Optionally, destroy the UI element as well if you want
-                    Destroy(uiElement); // This will destroy the UI element object
+            // Pick up key on F press
+            if (Input.GetKeyDown(KeyCode.F) && kc != null)
+            {
+                kc.IncrementKeyCount();
+                Destroy(transform.parent.gameObject);  // Remove the key object
+
+                if (uiElement != null)
+                {
+                    Destroy(uiElement);
                 }
             }
 
-            // Check if the keyCount has reached 3 and load the new scene
+            // If more than 3 keys, reset keys & load "Battle" scene
             if (kc != null && kc.keyCount > 3)
             {
-                kc.keyCount = 0; // Reset the key count
-                SceneManager.LoadScene("Battle"); // Load the specified scene
+                kc.keyCount = 0;    // or just rely on a new scene's keyCounter = 0
+                SceneManager.LoadScene("Battle");
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && uiElement != null)
         {
-            uiElement.SetActive(false); // Hide the UI element
+            uiElement.SetActive(false);
         }
     }
 }

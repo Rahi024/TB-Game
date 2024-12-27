@@ -26,6 +26,11 @@ public class BattleUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+            // At this point, `battleSystem.player.maxHealth` is already upgraded to 210
+        playerHealthSlider.maxValue = battleSystem.player.maxHealth;  // Now becomes 210
+        playerHealthSlider.value    = battleSystem.player.Health;     // Also 210
+
+
         // Attach button click listeners to respective functions
         if (attackButton != null)
         {
