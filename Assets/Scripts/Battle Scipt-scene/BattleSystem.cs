@@ -28,18 +28,20 @@ public class BattleSystem : MonoBehaviour
     public TextMeshProUGUI messageText;
 
     public GameOverScript gameOverScript;
+    private bool isPlayerBusy = false;
 
     void Start()
     {
         StartCoroutine(BattleLoop());
     }
 
-    void Update () {
+    void Update()
+    {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
 
-    void DisplayMessage(string message)
+    public void DisplayMessage(string message)
     {
         if (messageText != null)
         {
@@ -55,14 +57,18 @@ public class BattleSystem : MonoBehaviour
             if (playerTurn)
             {
                 // player-based DoTs are applied here. 
-                
                 DisplayMessage("Player turn to select a move!");
                 yield return new WaitUntil(() => !playerTurn);  
             }
             else
             {
-                // Apply DoT effects to the Bot at the start of Bots turn
-                bot.ApplyDotEffects();
+                // Apply DoT effects to the Bot at the start of Bot's turn
+                int dotDamage = bot.ApplyDotEffects();
+                if (dotDamage > 0)
+                {
+                    DisplayMessage($"Bot takes {dotDamage} status effect damage!");
+                    yield return new WaitForSeconds(1f);
+                }
 
                 DisplayMessage("Bot turn to select a move!");
                 yield return StartCoroutine(BotTurn());  
@@ -74,17 +80,19 @@ public class BattleSystem : MonoBehaviour
     // Called when the player selects an attack
     public void PlayerAttack(int attackType)
     {
-        if (playerTurn && !battleOver)
+        if (playerTurn && !battleOver && !isPlayerBusy)
         {
+            isPlayerBusy = true; 
             StartCoroutine(PlayerTurn(attackType));
         }
     }
 
     public void PlayerChargeAttack()
     {
-        if (playerTurn && !battleOver && chargeAttackAvailable)
+        if (playerTurn && !battleOver && chargeAttackAvailable && !isPlayerBusy)
         {
             // Start the charge attack turn if it's available
+            isPlayerBusy = true;
             StartCoroutine(PlayerChargeAttackTurn());
         }
     }
@@ -93,8 +101,10 @@ public class BattleSystem : MonoBehaviour
     public IEnumerator PlayerHeal()
     {
         // Player can heal if below max health and hasn't healed more than twice
-        if (playerTurn && !battleOver && playerHealCounter < 2 && player.Health < player.maxHealth)
+        if (playerTurn && !battleOver && playerHealCounter < 2 && player.Health < player.maxHealth && !isPlayerBusy)
         {
+            isPlayerBusy = true;
+
             player.Heal(30);  // Heal player by 30 health points
             DisplayMessage("Player healed by 30 health.");
             yield return new WaitForSeconds(1f);  
@@ -103,6 +113,8 @@ public class BattleSystem : MonoBehaviour
             CheckBattleOutcome();  
             FindObjectOfType<BattleUI>().UpdateHealthSliders();  // Update the UI health sliders
             playerTurn = false;  // End player's turn
+
+            isPlayerBusy = false;
         }
         else if (player.Health >= player.maxHealth)
         {
@@ -119,65 +131,110 @@ public class BattleSystem : MonoBehaviour
     // Handle player's turn based on selected attack type
     IEnumerator PlayerTurn(int attackType)
     {
+        bool isCrit = false;
+        int finalDamage = 0;
+
         switch (attackType)
         {
             case 1:
                 // Attack 1: Apply Burn
                 DisplayMessage("Player uses Blaze Overdrive!");
                 yield return new WaitForSeconds(1f);
-                player.Attack(bot);
+
+                finalDamage = player.Attack(bot, out isCrit);
+
+                DisplayMessage($"Bot takes {finalDamage} damage!");
+                if (isCrit)
+                {
+                    DisplayMessage("CRITICAL ATTACK!");
+                }
+                yield return new WaitForSeconds(1f);
+
                 // Apply Burn: 5 damage for 3 turns
                 bot.ApplyBurn(5, 3);
-                DisplayMessage($"Bot takes {player.AttackDamage} damage and is burned!");
+                DisplayMessage("Bot is burned for 3 turns!");
                 break;
+
             case 2:
                 // Attack 2: Apply Poison
                 if (!player.attack2Used)
                 {
                     DisplayMessage("Player uses Thorn Slash!");
                     yield return new WaitForSeconds(1f);
-                    player.SecondAttack(bot);
-                    // Apply Poison: 3 damage for 5 turns
+
+                    finalDamage = player.SecondAttack(bot, out isCrit);
+
+                    DisplayMessage($"Bot takes {finalDamage} damage!");
+                    if (isCrit)
+                    {
+                        DisplayMessage("CRITICAL ATTACK!");
+                    }
+                    yield return new WaitForSeconds(1f);
+
                     bot.ApplyPoison(3, 5);
-                    DisplayMessage($"Bot takes {player.SecondAttackDamage} damage and is poisoned!");
+                    DisplayMessage("Bot is poisoned (3 damage for 5 turns)!");
                     player.attack2Used = true;  // Mark the attack as used
                 }
                 else
                 {
                     DisplayMessage("Thorn Slash is not available.");
+                    yield return new WaitForSeconds(1f);
                 }
                 break;
+
             case 3:
                 // Attack 3: Shield for Player
                 if (!player.attack3Used)
                 {
                     DisplayMessage("Player uses Psycho Rift!");
                     yield return new WaitForSeconds(1f);
-                    player.ThirdAttack(bot);
+
+                    finalDamage = player.ThirdAttack(bot, out isCrit);
+
+                    DisplayMessage($"Bot takes {finalDamage} damage!");
+                    if (isCrit)
+                    {
+                        DisplayMessage("CRITICAL ATTACK!");
+                    }
+                    yield return new WaitForSeconds(1f);
+
                     // Activate Shield on Player
                     player.shieldActive = true;
-                    DisplayMessage($"Bot takes {player.ThirdAttackDamage} damage. Player is shielded!");
+                    DisplayMessage("Player is shielded!");
                     player.attack3Used = true;  
                 }
                 else
                 {
                     DisplayMessage("Psycho Rift is not available.");
+                    yield return new WaitForSeconds(1f);
                 }
                 break;
+
             case 4:
                 if (!player.attack4Used)
                 {
                     DisplayMessage("Player uses Marina Dash!");
                     yield return new WaitForSeconds(1f);
-                    player.FourthAttack(bot);
-                    DisplayMessage($"Bot takes {player.FourthAttackDamage} damage. Bot's Current Health: {bot.Health}");
+
+                    finalDamage = player.FourthAttack(bot, out isCrit);
+
+                    DisplayMessage($"Bot takes {finalDamage} damage!");
+                    if (isCrit)
+                    {
+                        DisplayMessage("CRITICAL ATTACK!");
+                    }
+                    yield return new WaitForSeconds(1f);
+
+                    DisplayMessage($"Bot's Current Health: {bot.Health}");
                     player.attack4Used = true;  // Mark the attack as used
                 }
                 else
                 {
                     DisplayMessage("Marina Dash is not available.");
+                    yield return new WaitForSeconds(1f);
                 }
                 break;
+
             default:
                 DisplayMessage("Unknown Attack!");  // Handle invalid attack selection
                 yield return new WaitForSeconds(1f);
@@ -223,6 +280,7 @@ public class BattleSystem : MonoBehaviour
         {
             playerTurn = false;
         }
+        isPlayerBusy = false; 
     }
 
     // Handle player's charge attack
@@ -230,8 +288,19 @@ public class BattleSystem : MonoBehaviour
     {
         DisplayMessage("Player uses Celestial Blast!");
         yield return new WaitForSeconds(1f);
-        player.ChargeAttack(bot);  // Perform the charge attack
-        DisplayMessage($"Bot takes {player.ChargeAttackDamage} damage. Bot's Current Health: {bot.Health}");
+
+        bool isCrit;
+        int finalDamage = player.ChargeAttack(bot, out isCrit);
+
+        DisplayMessage($"Bot takes {finalDamage} damage!");
+        if (isCrit)
+        {
+            DisplayMessage("CRITICAL ATTACK!");
+        }
+        yield return new WaitForSeconds(1f);
+
+        DisplayMessage($"Bot's Current Health: {bot.Health}");
+
         chargeAttackAvailable = false;  // Reset charge attack availability
         normalAttackCounter = 0;  // Reset normal attack counter
 
@@ -242,6 +311,7 @@ public class BattleSystem : MonoBehaviour
         {
             playerTurn = false;  
         }
+        isPlayerBusy = false;
     }
 
     IEnumerator BotTurn()
@@ -264,8 +334,18 @@ public class BattleSystem : MonoBehaviour
             {
                 DisplayMessage("Bot uses Celestial Blast!");
                 yield return new WaitForSeconds(1f);
-                bot.ChargeAttack(player);  // Perform charge attack on player
-                DisplayMessage($"Player takes {bot.ChargeAttackDamage} damage. Player's Current Health: {player.Health}");
+
+                bool isCrit;
+                int finalDamage = bot.ChargeAttack(player, out isCrit);
+
+                DisplayMessage($"Player takes {finalDamage} damage!");
+                if (isCrit)
+                {
+                    DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                }
+                yield return new WaitForSeconds(1f);
+
+                DisplayMessage($"Player's Current Health: {player.Health}");
                 FindObjectOfType<BattleUI>().UpdateHealthSliders();  // Update health sliders
                 botChargeAttackAvailable = false;  // Reset charge attack
                 botNormalAttackCounter = 0;  // Reset bot's normal attack counter
@@ -302,32 +382,71 @@ public class BattleSystem : MonoBehaviour
     // Perform a random attack by the bot based on the selected attack type
     IEnumerator PerformBotRandomAttack(int attackType)
     {
+        bool isCrit;
+        int finalDamage = 0;
+
         switch (attackType)
         {
             case 1:
                 DisplayMessage("Bot uses Attack 1!");
                 yield return new WaitForSeconds(1f);
-                bot.Attack(player);  // Perform basic attack
-                DisplayMessage($"Player takes {bot.AttackDamage} damage. Player's Current Health: {player.Health}");
+
+                finalDamage = bot.Attack(player, out isCrit);
+                DisplayMessage($"Player takes {finalDamage} damage!");
+                if (isCrit)
+                {
+                    DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                }
+                yield return new WaitForSeconds(1f);
+
+                DisplayMessage($"Player's Current Health: {player.Health}");
                 break;
+
             case 2:
                 DisplayMessage("Bot uses Attack 2!");
                 yield return new WaitForSeconds(1f);
-                bot.SecondAttack(player);  // Perform second attack
-                DisplayMessage($"Player takes {bot.SecondAttackDamage} damage. Player's Current Health: {player.Health}");
+
+                finalDamage = bot.SecondAttack(player, out isCrit);
+                DisplayMessage($"Player takes {finalDamage} damage!");
+                if (isCrit)
+                {
+                    DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                }
+                yield return new WaitForSeconds(1f);
+
+                DisplayMessage($"Player's Current Health: {player.Health}");
                 break;
+
             case 3:
                 DisplayMessage("Bot uses Attack 3!");
                 yield return new WaitForSeconds(1f);
-                bot.ThirdAttack(player);  // Perform third attack
-                DisplayMessage($"Player takes {bot.ThirdAttackDamage} damage. Player's Current Health: {player.Health}");
+
+                finalDamage = bot.ThirdAttack(player, out isCrit);
+                DisplayMessage($"Player takes {finalDamage} damage!");
+                if (isCrit)
+                {
+                    DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                }
+                yield return new WaitForSeconds(1f);
+
+                DisplayMessage($"Player's Current Health: {player.Health}");
                 break;
+
             case 4:
                 DisplayMessage("Bot uses Attack 4!");
                 yield return new WaitForSeconds(1f);
-                bot.FourthAttack(player);  // Perform fourth attack
-                DisplayMessage($"Player takes {bot.FourthAttackDamage} damage. Player's Current Health: {player.Health}");
+
+                finalDamage = bot.FourthAttack(player, out isCrit);
+                DisplayMessage($"Player takes {finalDamage} damage!");
+                if (isCrit)
+                {
+                    DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                }
+                yield return new WaitForSeconds(1f);
+
+                DisplayMessage($"Player's Current Health: {player.Health}");
                 break;
+
             default:
                 DisplayMessage("Unknown Bot Attack!");  // Handle invalid attack selection
                 yield return new WaitForSeconds(1f);
@@ -358,7 +477,6 @@ public class BattleSystem : MonoBehaviour
             battleOver = true;
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
             SceneManager.LoadScene("scene2");  // Load the victory scene
-            //gameOverScript.gameOver(); // Load the victory scene
         }
     }
 }

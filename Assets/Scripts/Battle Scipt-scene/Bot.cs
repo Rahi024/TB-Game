@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Bot : MonoBehaviour
 {
-    // Public health and damage values for the bot's attacks
+    // Public health and damage values
     public int Health = 200; 
     public int AttackDamage = 20; 
     public int SecondAttackDamage = 30; 
@@ -18,33 +18,88 @@ public class Bot : MonoBehaviour
     public int poisonDuration = 0;
 
     // Basic attack method that reduces the player's health 
-    public void Attack(Player player)
+    public int Attack(Player player, out bool isCrit)
     {
-        player.TakeDamage(AttackDamage); 
+        int baseDamage = AttackDamage;
+        bool critHappened = false;
+
+        if (Random.value < 0.3f)
+        {
+            baseDamage = Mathf.RoundToInt(baseDamage * 1.25f);
+            critHappened = true;
+        }
+
+        player.TakeDamage(baseDamage);
+        isCrit = critHappened;
+        return baseDamage;
     }
 
     // Second attack 
-    public void SecondAttack(Player player)
+    public int SecondAttack(Player player, out bool isCrit)
     {
-        player.TakeDamage(SecondAttackDamage); 
+        int baseDamage = SecondAttackDamage;
+        bool critHappened = false;
+
+        if (Random.value < 0.3f)
+        {
+            baseDamage = Mathf.RoundToInt(baseDamage * 1.25f);
+            critHappened = true;
+        }
+
+        player.TakeDamage(baseDamage);
+        isCrit = critHappened;
+        return baseDamage;
     }
 
     // Third attack method 
-    public void ThirdAttack(Player player)
+    public int ThirdAttack(Player player, out bool isCrit)
     {
-        player.TakeDamage(ThirdAttackDamage);
+        int baseDamage = ThirdAttackDamage;
+        bool critHappened = false;
+
+        if (Random.value < 0.3f)
+        {
+            baseDamage = Mathf.RoundToInt(baseDamage * 1.25f);
+            critHappened = true;
+        }
+
+        player.TakeDamage(baseDamage);
+        isCrit = critHappened;
+        return baseDamage;
     }
 
     // Fourth attack method 
-    public void FourthAttack(Player player)
+    public int FourthAttack(Player player, out bool isCrit)
     {
-        player.TakeDamage(FourthAttackDamage); 
+        int baseDamage = FourthAttackDamage;
+        bool critHappened = false;
+
+        if (Random.value < 0.3f)
+        {
+            baseDamage = Mathf.RoundToInt(baseDamage * 1.25f);
+            critHappened = true;
+        }
+
+        player.TakeDamage(baseDamage);
+        isCrit = critHappened;
+        return baseDamage;
     }
 
     // Charge attack method, which deals the most powerful damage to the player
-    public void ChargeAttack(Player player)
+    public int ChargeAttack(Player player, out bool isCrit)
     {
-        player.TakeDamage(ChargeAttackDamage); 
+        int baseDamage = ChargeAttackDamage;
+        bool critHappened = false;
+
+        if (Random.value < 0.3f)
+        {
+            baseDamage = Mathf.RoundToInt(baseDamage * 1.25f);
+            critHappened = true;
+        }
+
+        player.TakeDamage(baseDamage);
+        isCrit = critHappened;
+        return baseDamage;
     }
 
     // Method to take damage when the player attacks the bot
@@ -59,8 +114,45 @@ public class Bot : MonoBehaviour
     {
         // Increase bot's health by the heal amount
         Health += healAmount;
+        // If your intended max for the bot is 100, keep this
         if (Health > 100) Health = 100; 
         Debug.Log($"Bot heals for {healAmount}. Current Health: {Health}");
+    }
+
+    public int ApplyDotEffects()
+    {
+        int totalDamage = 0;
+
+        // Burn
+        if (burnDuration > 0)
+        {
+            totalDamage += burnDamagePerTurn;
+            burnDuration--;
+            if (burnDuration == 0)
+            {
+                burnDamagePerTurn = 0;
+            }
+        }
+
+        // Poison
+        if (poisonDuration > 0)
+        {
+            totalDamage += poisonDamagePerTurn;
+            poisonDuration--;
+            if (poisonDuration == 0)
+            {
+                poisonDamagePerTurn = 0;
+            }
+        }
+
+        // Apply the total DOT if > 0
+        if (totalDamage > 0)
+        {
+            TakeDamage(totalDamage);
+            Debug.Log($"Bot takes {totalDamage} DOT damage. Current Health: {Health}");
+        }
+
+        return totalDamage;
     }
 
     public void ApplyBurn(int damage, int duration)
@@ -73,36 +165,5 @@ public class Bot : MonoBehaviour
     {
         poisonDamagePerTurn = damage;
         poisonDuration = duration;
-    }
-
-    public void ApplyDotEffects()
-    {
-        int totalDamage = 0;
-
-        if (burnDuration > 0)
-        {
-            totalDamage += burnDamagePerTurn;
-            burnDuration--;
-            if (burnDuration == 0)
-            {
-                burnDamagePerTurn = 0;
-            }
-        }
-
-        if (poisonDuration > 0)
-        {
-            totalDamage += poisonDamagePerTurn;
-            poisonDuration--;
-            if (poisonDuration == 0)
-            {
-                poisonDamagePerTurn = 0;
-            }
-        }
-
-        if (totalDamage > 0)
-        {
-            TakeDamage(totalDamage);
-            Debug.Log($"Bot takes {totalDamage} DOT damage. Current Health: {Health}");
-        }
     }
 }
