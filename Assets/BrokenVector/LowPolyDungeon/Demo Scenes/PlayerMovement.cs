@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController), typeof(Animator))]
 public class PlayerMovement : MonoBehaviour
 {
+    public Animator animator;
     // Reference to the CharacterController component that will handle the player's movement
     public CharacterController controller;
 
@@ -21,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -55,5 +58,8 @@ public class PlayerMovement : MonoBehaviour
         // Apply gravity over time to simulate falling when not grounded
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+
+        // Animation
+        animator.SetBool("isRun", Input.GetAxisRaw("Vertical") != 0);
     }
 }
