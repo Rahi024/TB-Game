@@ -26,6 +26,12 @@ public class BattleUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Set the max values for the health sliders with global upgrades applied
+        playerHealthSlider.maxValue = battleSystem.player.maxHealth; // Updated after global upgrades
+        playerHealthSlider.value = battleSystem.player.Health; // Set to the current health
+        botHealthSlider.maxValue = battleSystem.bot.Health; // Bot's health remains unchanged
+        botHealthSlider.value = battleSystem.bot.Health;
+
         // Attach button click listeners to respective functions
         if (attackButton != null)
         {
@@ -57,12 +63,6 @@ public class BattleUI : MonoBehaviour
             healButton.onClick.AddListener(OnHealClicked);
         }
 
-        // Set the max values and current values for the health sliders (player and bot)
-        playerHealthSlider.maxValue = battleSystem.player.maxHealth;
-        playerHealthSlider.value = battleSystem.player.Health;
-        botHealthSlider.maxValue = battleSystem.bot.Health;
-        botHealthSlider.value = battleSystem.bot.Health;
-
         // Initialize the health text display
         UpdateHealthTexts();
     }
@@ -74,7 +74,7 @@ public class BattleUI : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        // Check the battle system to update UI states
+        // Update UI states based on the battle system's current state
         if (battleSystem != null)
         {
             chargeAttackButton.gameObject.SetActive(battleSystem.chargeAttackAvailable);

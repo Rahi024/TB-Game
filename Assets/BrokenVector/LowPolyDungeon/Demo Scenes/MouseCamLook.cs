@@ -10,7 +10,8 @@ public class MouseCamLook : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = true; // Ensure the cursor is visible
+        Cursor.lockState = CursorLockMode.None; // Unlock the cursor
     }
 
     void Update()

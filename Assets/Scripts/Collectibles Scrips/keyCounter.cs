@@ -1,32 +1,57 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro; // Ensure this is included if you're using TextMeshPro
+using TMPro;
 
 public class keyCounter : MonoBehaviour
 {
-    public int keyCount; // Counter for keys
-    public TextMeshProUGUI keyCountText; // Reference to the Text component
+    public int keyCount;                         // Reset each scene
+    public TextMeshProUGUI keyCountText;         // "Keys: X"
+    public TextMeshProUGUI coinCountText;        // If you want "Coins: Y" here too
 
-    public void Start()
+    void Start()
     {
-        // Initialize the display
         UpdateKeyCountDisplay();
+        UpdateCoinCountDisplay();
     }
 
-    // Method to increment the key count
+    // Called from your trigger or other scripts
     public void IncrementKeyCount()
     {
-        keyCount++; // Increment the key count
-        UpdateKeyCountDisplay(); // Update the display
+        // Increase local key count
+        keyCount++;
+        Debug.Log("Key count incremented to: " + keyCount);
+
+        // Award random coins (1-100) to the global manager
+        int randomCoins = Random.Range(1, 101);
+        Debug.Log("Coins incremented by " + randomCoins);
+
+        if (CoinManager.Instance != null)
+        {
+            CoinManager.Instance.AddCoins(randomCoins);
+        }
+        else
+        {
+            Debug.LogError("CoinManager.Instance is null!");
+        }
+
+        UpdateKeyCountDisplay();
+        UpdateCoinCountDisplay();
     }
 
-    // Method to update the text display
+    // Refresh local key UI
     void UpdateKeyCountDisplay()
     {
         if (keyCountText != null)
         {
-            keyCountText.text = "Keys: " + keyCount; // Update the text
+            keyCountText.text = "Keys: " + keyCount;
+        }
+    }
+
+    // If you also want to show coins in this scene
+    void UpdateCoinCountDisplay()
+    {
+        if (coinCountText != null && CoinManager.Instance != null)
+        {
+            coinCountText.text = "Coins: " + CoinManager.Instance.totalCoins;
         }
     }
 }
