@@ -345,6 +345,7 @@ public class BattleSystem : MonoBehaviour
         FindObjectOfType<BattleUI>().UpdateHealthSliders();
         yield break;
     }
+    
 
     void CheckBattleOutcome()
     {
@@ -356,13 +357,24 @@ public class BattleSystem : MonoBehaviour
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
             gameOverScript.gameOver();
         }
+
         else if (bot.Health <= 0)
         {
             bot.Health = 0;
             DisplayMessage("Bot Lost The Battle!");
             battleOver = true;
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
-            SceneManager.LoadScene("scene2");//Load the next scene
+
+            // Load the next scene dynamically
+            if (NextSceneScript.Instance != null)
+            {
+                NextSceneScript.Instance.LoadNextScene();
+            }
+            else
+            {
+                Debug.LogWarning("NextSceneScript is not set up. Returning to default.");
+                UnityEngine.SceneManagement.SceneManager.LoadScene("scene1"); // Fallback
+            }
         }
     }
 }

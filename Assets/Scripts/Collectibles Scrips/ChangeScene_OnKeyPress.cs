@@ -6,47 +6,33 @@ using UnityEngine.SceneManagement;
 public class ChangeScene_OnKeyPress : MonoBehaviour
 {
     [SerializeField] private GameObject uiElement; // UI element to show when the player is nearby
+    [SerializeField] private bool isBossTrigger = false; // Flag to identify the boss trigger
     private keyCounter kc; // Reference to the keyCounter component
+    private bool isPlayerNearby = false; // Tracks if the player is near the key or trigger
 
     private void Start()
     {
-        // Find the keyCounter instance in the scene
         kc = FindObjectOfType<keyCounter>();
-
-        // Optional: Check if kc is assigned correctly
         if (kc == null)
         {
             Debug.LogError("keyCounter instance not found in the scene!");
         }
     }
 
-    private void OnTriggerStay(Collider other)
+    private void Update()
+    {
+        if (isPlayerNearby && Input.GetKeyDown(KeyCode.F))
+        {
+            HandleInteraction();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            uiElement.SetActive(true); // Show the UI element
-            
-            // Check for key press and increment the key count
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                if (kc != null) // Check if kc is not null before calling the method
-                {
-                    kc.IncrementKeyCount(); // Call the method to increment key count
-
-                    // Destroy the parent object (sphere) of this trigger
-                    Destroy(transform.parent.gameObject); // This will destroy the parent object (sphere)
-                    
-                    // Optionally, destroy the UI element as well if you want
-                    Destroy(uiElement); // This will destroy the UI element object
-                }
-            }
-
-            // Check if the keyCount has reached 3 and load the new scene
-            if (kc != null && kc.keyCount > 3)
-            {
-                kc.keyCount = 0; // Reset the key count
-                SceneManager.LoadScene("Battle"); // Load the specified scene
-            }
+            isPlayerNearby = true;
+            uiElement.SetActive(true);
         }
     }
 
@@ -54,7 +40,34 @@ public class ChangeScene_OnKeyPress : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            uiElement.SetActive(false); // Hide the UI element
+            isPlayerNearby = false;
+            uiElement.SetActive(false);
+        }
+    }
+
+    private void HandleInteraction()
+    {
+        if (kc != null)
+        {
+            if (!isBossTrigger)
+            {
+                kc.IncrementKeyCount();
+                Destroy(transform.parent.gameObject);
+                Destroy(uiElement);
+            }
+            else
+            {
+                if (kc.keyCount == 3)
+                {
+                    kc.keyCount = 0;
+                    // Transition to the Battle scene
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("Battle");
+                }
+                else
+                {
+                    Debug.Log("Collect all 3 keys before accessing the boss!");
+                }
+            }
         }
     }
 }

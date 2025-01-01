@@ -2,13 +2,14 @@ using UnityEngine;
 
 public class Chest : MonoBehaviour
 {
-    public Sprite healthPotionIcon; // Assign the health potion icon in the Inspector
-    public Sprite attackPotionIcon; // Assign the attack potion icon in the Inspector
-    public GameObject healthPotionPrefab; // Assign the Health Potion prefab in the Inspector
-    public GameObject attackPotionPrefab; // Assign the Attack Potion prefab in the Inspector
-    public InventoryManager inventoryManager; // Reference to the InventoryManager script
+    public Sprite healthPotionIcon;
+    public Sprite attackPotionIcon;
+    public GameObject healthPotionPrefab;
+    public GameObject attackPotionPrefab;
+    public InventoryManager inventoryManager;
 
     private bool isLooted = false; // Tracks whether the chest has been looted
+    private bool isPlayerNearby = false; // Tracks whether the player is near the chest
 
     public void OpenChest()
     {
@@ -20,43 +21,47 @@ public class Chest : MonoBehaviour
 
         if (isLooted)
         {
-            // Update the message to indicate the chest is empty
             inventoryManager.DisplayMessage("Chest is now empty.");
             Debug.Log("Chest is empty.");
             return;
         }
 
-        // Example logic: randomly add either a health or attack potion
         int randomChoice = Random.Range(0, 2);
 
-        // Determine which prefab and properties to use
         GameObject selectedPrefab = randomChoice == 0 ? healthPotionPrefab : attackPotionPrefab;
         Sprite itemIcon = randomChoice == 0 ? healthPotionIcon : attackPotionIcon;
         string itemName = randomChoice == 0 ? "Health Potion" : "Attack Potion";
         string upgradeType = randomChoice == 0 ? "Health" : "Attack";
         int upgradeValue = randomChoice == 0 ? 10 : 7;
 
-        // Add the item to the inventory using the selected prefab
         inventoryManager.AddItemWithPrefab(selectedPrefab, itemIcon, itemName, upgradeType, upgradeValue);
         Debug.Log($"Added {itemName} to inventory.");
 
-        // Update the message and mark the chest as looted
         inventoryManager.DisplayMessage($"Collected {itemName}!");
-        isLooted = true; // Mark the chest as looted
+        isLooted = true;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
+            isPlayerNearby = true; // Player is near the chest
             Debug.Log("Press 'E' to open the chest.");
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            isPlayerNearby = false; // Player has moved away from the chest
         }
     }
 
     private void Update()
     {
-        // Open the chest when the player presses 'E'
-        if (Input.GetKeyDown(KeyCode.E))
+        // Open the chest only if the player is nearby and presses 'E'
+        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
         {
             OpenChest();
         }
