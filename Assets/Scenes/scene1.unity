@@ -4581,7 +4581,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 1191592094}
   animator: {fileID: 1191592095}
-  baseSpeed: 12
+  baseSpeed: 5
   gravity: -9.81
   jumpHeight: 3
   sprintSpeed: 5
@@ -8316,11 +8316,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5356982479775062435, guid: de93b92203750fa4abe97afa4293fd88, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00017762424
+      value: 0.00017758993
       objectReference: {fileID: 0}
     - target: {fileID: 5356982479775062435, guid: de93b92203750fa4abe97afa4293fd88, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000013775397
+      value: -0.000013772736
       objectReference: {fileID: 0}
     - target: {fileID: 8577642770894555884, guid: de93b92203750fa4abe97afa4293fd88, type: 3}
       propertyPath: m_LocalRotation.w
