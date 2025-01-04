@@ -5848,7 +5848,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 780439736}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.11177958, y: 0.00017704356, z: -0.000019914662, w: 0.993733}
+  m_LocalRotation: {x: 0.11177958, y: 0.00017700439, z: -0.000019910258, w: 0.993733}
   m_LocalPosition: {x: -0.012207031, y: 10.371302, z: -34.26239}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
@@ -15633,11 +15633,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 475205579666391623, guid: de93b92203750fa4abe97afa4293fd88, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00017703683
+      value: 0.00017701118
       objectReference: {fileID: 0}
     - target: {fileID: 475205579666391623, guid: de93b92203750fa4abe97afa4293fd88, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000019913903
+      value: -0.000019911015
       objectReference: {fileID: 0}
     - target: {fileID: 1273732837618715668, guid: de93b92203750fa4abe97afa4293fd88, type: 3}
       propertyPath: m_Enabled
@@ -15733,11 +15733,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5356982479775062435, guid: de93b92203750fa4abe97afa4293fd88, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00017762424
+      value: 0.00017758993
       objectReference: {fileID: 0}
     - target: {fileID: 5356982479775062435, guid: de93b92203750fa4abe97afa4293fd88, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000013775397
+      value: -0.000013772736
       objectReference: {fileID: 0}
     - target: {fileID: 8577642770894555884, guid: de93b92203750fa4abe97afa4293fd88, type: 3}
       propertyPath: m_LocalRotation.w
@@ -16014,6 +16014,18 @@ PrefabInstance:
     - target: {fileID: 4277929826266376744, guid: f733705eda05b4444b5e5d821aeb21ac, type: 3}
       propertyPath: m_Name
       value: Shop
+      objectReference: {fileID: 0}
+    - target: {fileID: 7021050393666181972, guid: f733705eda05b4444b5e5d821aeb21ac, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7021050393666181972, guid: f733705eda05b4444b5e5d821aeb21ac, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2f94028bccd10dd46b360ecc25a67fa6, type: 3}
+    - target: {fileID: 7021050393666181972, guid: f733705eda05b4444b5e5d821aeb21ac, type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7048545976320074325, guid: f733705eda05b4444b5e5d821aeb21ac, type: 3}
       propertyPath: playerCoinsText
