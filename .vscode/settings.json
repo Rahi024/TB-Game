@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "TBB-Gamee.sln"
+    "dotnet.defaultSolution": "TB-Game.sln"
 }
