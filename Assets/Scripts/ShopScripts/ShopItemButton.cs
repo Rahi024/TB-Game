@@ -15,10 +15,12 @@ public class ShopItemButton : MonoBehaviour
     public string upgradeType;    // "Health" or "Attack"
     public int costMultiplier = 2;
 
-    // Reference to ShopManager if needed
     private ShopManager shopManager;
     private BattleSystem battleSystem;
 
+    /// <summary>
+    /// Called by ShopManager right after the prefab is instantiated, to set up its data.
+    /// </summary>
     public void SetItem(
         string name, 
         int startingCost, 
@@ -29,39 +31,49 @@ public class ShopItemButton : MonoBehaviour
         BattleSystem battleSystem
     )
     {
-        // Basic setup
-        if (nameText) nameText.text = name;
-        if (costText) costText.text = $"Cost: {startingCost}";
+        // Basic UI setup
+        if (nameText)  nameText.text = name;
+        if (costText)  costText.text = $"Cost: {startingCost}";
         if (iconImage) iconImage.sprite = itemIcon;
 
-        cost = startingCost;
-        upgradeType = type;
-        upgradeValue = value;
-        shopManager = manager;
+        // Store references for later
+        cost          = startingCost;
+        upgradeType   = type;
+        upgradeValue  = value;
+        shopManager   = manager;
+        this.battleSystem = battleSystem;
     }
 
+    /// <summary>
+    /// Called when the player clicks the "Purchase" button.
+    /// </summary>
     public void OnPurchaseButtonClicked()
     {
         if (CoinManager.Instance.totalCoins >= cost)
         {
+            // Deduct coins and apply the upgrade
             CoinManager.Instance.RemoveCoins(cost);
-            ApplyUpgrade();  // <-- Writes to GlobalUpgrades
+            ApplyUpgrade();
+
+            // Update the coin display in the UI
             shopManager.UpdateCoinDisplay();
 
-            // Increase cost for next purchase
+            // Increase cost for next time
             cost *= costMultiplier;
             if (costText)
                 costText.text = $"Cost: {cost}";
         }
         else
         {
-            Debug.Log("Not enough coins!");
+            shopManager.ShowCostDisplay($"Not enough coins to buy {nameText.text}!");
         }
     }
 
+    /// <summary>
+    /// Applies the upgrade and shows the "Used X coins, added Y" message on screen.
+    /// </summary>
     private void ApplyUpgrade()
     {
-        // Instead of referencing the battle scene, we update the global bonuses
         switch (upgradeType)
         {
             case "Health":
@@ -72,11 +84,10 @@ public class ShopItemButton : MonoBehaviour
                 break;
             default:
                 Debug.LogWarning("Unknown upgrade type: " + upgradeType);
-                break;
+                return;
         }
 
-        Debug.Log($"Applied {upgradeType} upgrade of {upgradeValue}. " + 
-                  $"Now: HealthBonus={GlobalUpgrades.Instance.healthBonus}, " +
-                  $"AttackBonus={GlobalUpgrades.Instance.attackBonus}");
+        // Instead of Debug.Log, show on-screen message
+        shopManager.ShowCostDisplay($"Used {cost} coins and added {upgradeValue} {upgradeType}!");
     }
 }
