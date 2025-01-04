@@ -6,23 +6,27 @@ public class OptionsMenu : MonoBehaviour
     public Slider brightnessSlider;
     public Slider audioSlider;
     public Slider sensitivitySlider;
+    public Toggle invertCameraToggle;
     public GameObject optionsMenuCanvas;
 
     private float defaultBrightness = 1.0f;
     private float defaultAudio = 1.0f;
     private float defaultSensitivity = 1.0f;
+    private bool defaultInvertCamera = false;
 
     void Start()
     {
-        // Set default slider values
+        // Set default slider and toggle values
         brightnessSlider.value = defaultBrightness;
         audioSlider.value = defaultAudio;
         sensitivitySlider.value = defaultSensitivity;
+        invertCameraToggle.isOn = defaultInvertCamera;
 
-        // Add listeners to sliders
+        // Add listeners to sliders and toggle
         brightnessSlider.onValueChanged.AddListener(SetBrightness);
         audioSlider.onValueChanged.AddListener(SetAudioVolume);
         sensitivitySlider.onValueChanged.AddListener(SetMouseSensitivity);
+        invertCameraToggle.onValueChanged.AddListener(SetInvertCamera);
 
         // Hide the options menu by default
         optionsMenuCanvas.SetActive(false);
@@ -44,6 +48,13 @@ public class OptionsMenu : MonoBehaviour
     {
         // Save sensitivity setting (for use in your player controller script)
         PlayerPrefs.SetFloat("MouseSensitivity", sensitivity);
+    }
+
+    public void SetInvertCamera(bool isInverted)
+    {
+        // Save invert camera setting
+        PlayerPrefs.SetInt("InvertCamera", isInverted ? 1 : 0);
+        Debug.Log("Invert Camera: " + (isInverted ? "Enabled" : "Disabled"));
     }
 
     public void OpenOptionsMenu()

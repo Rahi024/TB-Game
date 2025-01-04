@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168d5b3d04a6d9f4aaf505e698b235dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: 0edcb30428af9c34b9114c75ee984bf2, type: 3}
+  icon: {fileID: 21300000, guid: 22201abc0e88c924681a2efc0fbb9b16, type: 3}
   itemName: HealthPotion
 --- !u!1 &2294602653967136609
 GameObject:
