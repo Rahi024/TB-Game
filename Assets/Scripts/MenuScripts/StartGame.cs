@@ -23,7 +23,7 @@ public class StartGame : MonoBehaviour
         }
 
         // Load the first scene (no saved checkpoints since we cleared)
-        SceneManager.LoadScene("scene1");
+        SceneManager.LoadScene("IntroScene");
     }
 
     public void LoadGameButton()
