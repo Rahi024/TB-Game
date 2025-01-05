@@ -62,7 +62,7 @@ public class CoinManager : MonoBehaviour
     {
         if (coinText != null)
         {
-            coinText.text = "Coins: " + totalCoins;
+            coinText.text = totalCoins.ToString();
         }
         else
         {

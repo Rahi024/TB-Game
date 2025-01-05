@@ -53,7 +53,7 @@ public class ShopManager : MonoBehaviour
     {
         if (playerCoinsText != null)
         {
-            playerCoinsText.text = "Coins: " + CoinManager.Instance.totalCoins;
+            playerCoinsText.text = CoinManager.Instance.totalCoins.ToString();
         }
     }
 

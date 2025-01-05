@@ -61,7 +61,7 @@ public class ShopItemButton : MonoBehaviour
             // Increase cost for next time
             cost *= costMultiplier;
             if (costText)
-                costText.text = $"Cost: {cost}";
+                costText.text = cost.ToString();
         }
         else
         {

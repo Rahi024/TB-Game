@@ -53,7 +53,7 @@ public class keyCounter : MonoBehaviour
     {
         if (keyCountText != null)
         {
-            keyCountText.text = $"Keys: {keyCount} / {totalKeysNeeded}";
+            keyCountText.text = $"{keyCount} / {totalKeysNeeded}";
         }
     }
 
@@ -62,7 +62,7 @@ public class keyCounter : MonoBehaviour
     {
         if (coinCountText != null && CoinManager.Instance != null)
         {
-            coinCountText.text = "Coins: " + CoinManager.Instance.totalCoins;
+            coinCountText.text = CoinManager.Instance.totalCoins.ToString();
         }
     }
 
