@@ -405,10 +405,12 @@ public class BattleSystem : MonoBehaviour
                             Quaternion.identity
                         );
                     }
+                bot.animator.SetTrigger("blaze");
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.Attack(player, out isCrit);
                 DisplayMessage($"Player takes {finalDamage} damage!");
                 if (isCrit) DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                player.animator.ResetTrigger("blaze");
                 break;
 
             case 2:
@@ -421,10 +423,12 @@ public class BattleSystem : MonoBehaviour
                             Quaternion.identity
                         );
                     }
+                bot.animator.SetTrigger("thorn");
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.SecondAttack(player, out isCrit);
                 DisplayMessage($"Player takes {finalDamage} damage!");
                 if (isCrit) DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                player.animator.ResetTrigger("thorn");
                 break;
 
             case 3:
@@ -437,10 +441,12 @@ public class BattleSystem : MonoBehaviour
                             Quaternion.identity
                         );
                     }
+                bot.animator.SetTrigger("psycho");
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.ThirdAttack(player, out isCrit);
                 DisplayMessage($"Player takes {finalDamage} damage!");
                 if (isCrit) DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                player.animator.ResetTrigger("psycho");
                 break;
 
             case 4:
@@ -453,10 +459,12 @@ public class BattleSystem : MonoBehaviour
                             Quaternion.identity
                         );
                     }
+                bot.animator.SetTrigger("marina");
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.FourthAttack(player, out isCrit);
                 DisplayMessage($"Player takes {finalDamage} damage!");
                 if (isCrit) DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                player.animator.ResetTrigger("marina");
                 break;
 
             default:

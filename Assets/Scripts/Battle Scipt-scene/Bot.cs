@@ -1,8 +1,12 @@
 using System.Collections; 
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class Bot : MonoBehaviour
 {
+    //Animation
+    public Animator animator;
+
     // Public health and damage values
     public int Health = 200; 
     public int AttackDamage = 20; 
@@ -16,6 +20,11 @@ public class Bot : MonoBehaviour
     public int burnDuration = 0;
     public int poisonDamagePerTurn = 0;
     public int poisonDuration = 0;
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     // Basic attack method that reduces the player's health 
     public int Attack(Player player, out bool isCrit)
