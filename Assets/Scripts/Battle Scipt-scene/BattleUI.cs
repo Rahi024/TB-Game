@@ -2,8 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[RequireComponent(typeof(Animator))]
 public class BattleUI : MonoBehaviour
 {
+
     // Buttons for different player actions (attacks, charge, heal)
     public Button attackButton;
     public Button attackButton2;

@@ -3,8 +3,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+[RequireComponent(typeof(Animator))]
 public class BattleSystem : MonoBehaviour
 {
+    //Reference for animator
+    public Animator animator;
+
     // Public references to Player and Bot objects
     public Player player;
     public Bot bot;
@@ -37,6 +41,7 @@ public class BattleSystem : MonoBehaviour
     void Start()
     {
         StartCoroutine(BattleLoop());
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -145,18 +150,21 @@ public class BattleSystem : MonoBehaviour
         {
             case 1:
                 DisplayMessage("Player uses Blaze Overdrive!");
+                player.animator.SetTrigger("blaze");
                 yield return new WaitForSeconds(1f);
                 finalDamage = player.Attack(bot, out isCrit);
                 DisplayMessage($"Bot takes {finalDamage} damage!");
                 if (isCrit) DisplayMessage("CRITICAL ATTACK!");
                 bot.ApplyBurn(5000, 3);
                 DisplayMessage("Bot is burned for 3 turns!");
+                player.animator.ResetTrigger("blaze");
                 break;
 
             case 2:
                 if (!player.attack2Used)
                 {
                     DisplayMessage("Player uses Thorn Slash!");
+                    player.animator.SetTrigger("thorn");
                     yield return new WaitForSeconds(1f);
                     finalDamage = player.SecondAttack(bot, out isCrit);
                     DisplayMessage($"Bot takes {finalDamage} damage!");
@@ -164,6 +172,7 @@ public class BattleSystem : MonoBehaviour
                     bot.ApplyPoison(3, 5);
                     DisplayMessage("Bot is poisoned (3 damage for 5 turns)!");
                     player.attack2Used = true;
+                    player.animator.ResetTrigger("thorn");
                 }
                 else
                 {
@@ -176,6 +185,7 @@ public class BattleSystem : MonoBehaviour
                 if (!player.attack3Used)
                 {
                     DisplayMessage("Player uses Psycho Rift!");
+                    player.animator.SetTrigger("psycho");
                     yield return new WaitForSeconds(1f);
                     finalDamage = player.ThirdAttack(bot, out isCrit);
                     DisplayMessage($"Bot takes {finalDamage} damage!");
@@ -183,6 +193,7 @@ public class BattleSystem : MonoBehaviour
                     player.shieldActive = true;
                     DisplayMessage("Player is shielded!");
                     player.attack3Used = true;
+                    player.animator.ResetTrigger("psycho");
                 }
                 else
                 {
@@ -195,12 +206,14 @@ public class BattleSystem : MonoBehaviour
                 if (!player.attack4Used)
                 {
                     DisplayMessage("Player uses Marina Dash!");
+                    player.animator.SetTrigger("marina");
                     yield return new WaitForSeconds(1f);
                     finalDamage = player.FourthAttack(bot, out isCrit);
                     DisplayMessage($"Bot takes {finalDamage} damage!");
                     if (isCrit) DisplayMessage("CRITICAL ATTACK!");
                     DisplayMessage($"Bot's Current Health: {bot.Health}");
                     player.attack4Used = true;
+                    player.animator.ResetTrigger("marina");
                 }
                 else
                 {

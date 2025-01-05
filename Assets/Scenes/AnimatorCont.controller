@@ -120,6 +120,30 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 1
     m_Controller: {fileID: 0}
+  - m_Name: blaze
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 1
+    m_Controller: {fileID: 0}
+  - m_Name: thorn
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 1
+    m_Controller: {fileID: 0}
+  - m_Name: marina
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 1
+    m_Controller: {fileID: 0}
+  - m_Name: psycho
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 1
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -221,22 +245,22 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -7079260655707581331}
-    m_Position: {x: 310, y: 170, z: 0}
+    m_Position: {x: 30, y: 390, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -7014550875500247551}
-    m_Position: {x: 500, y: 290, z: 0}
+    m_Position: {x: 520, y: 400, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1092864225270973098}
-    m_Position: {x: -200, y: 300, z: 0}
+    m_Position: {x: -230, y: 250, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8816914043234923629}
-    m_Position: {x: 120, y: 300, z: 0}
+    m_Position: {x: 330, y: 260, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7231533661459246452}
-    m_Position: {x: -200, y: 420, z: 0}
+    m_Position: {x: -210, y: 580, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6157242772273310275}
-    m_Position: {x: 130, y: 430, z: 0}
+    m_Position: {x: 180, y: 570, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
