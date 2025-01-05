@@ -32,6 +32,20 @@ public class BattleSystem : MonoBehaviour
     public GameOverScript gameOverScript;
     private bool isPlayerBusy = false;
 
+    public GameObject poisonParticlePrefab;
+    public GameObject physicParticlePrefab;
+    public GameObject waterParticlePrefab;
+    public GameObject fireParticlePrefab;
+    public GameObject celestialParticlePrefab;
+    public GameObject healParticlePrefab;
+
+    public GameObject botpoisonParticlePrefab;
+    public GameObject botphysicParticlePrefab;
+    public GameObject botwaterParticlePrefab;
+    public GameObject botfireParticlePrefab;
+    public GameObject botcelestialParticlePrefab;
+    public GameObject bothealParticlePrefab;
+
     void Awake()
     {
         // Apply any purchased upgrades before starting the game
@@ -120,6 +134,14 @@ public class BattleSystem : MonoBehaviour
 
             player.Heal(30);
             DisplayMessage("Player healed by 30 health.");
+            if (healParticlePrefab != null)
+                    {
+                        GameObject healEffect = Instantiate(
+                            healParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
             yield return new WaitForSeconds(1f);
             DisplayMessage($"Player's Current Health: {player.Health}");
             playerHealCounter++;
@@ -150,6 +172,14 @@ public class BattleSystem : MonoBehaviour
         {
             case 1:
                 DisplayMessage("Player uses Blaze Overdrive!");
+                if (fireParticlePrefab != null)
+                    {
+                        GameObject fireEffect = Instantiate(
+                            fireParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
                 player.animator.SetTrigger("blaze");
                 yield return new WaitForSeconds(1f);
                 finalDamage = player.Attack(bot, out isCrit);
@@ -164,6 +194,14 @@ public class BattleSystem : MonoBehaviour
                 if (!player.attack2Used)
                 {
                     DisplayMessage("Player uses Thorn Slash!");
+                    if (poisonParticlePrefab != null)
+                    {
+                        GameObject poisonEffect = Instantiate(
+                            poisonParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
                     player.animator.SetTrigger("thorn");
                     yield return new WaitForSeconds(1f);
                     finalDamage = player.SecondAttack(bot, out isCrit);
@@ -185,6 +223,14 @@ public class BattleSystem : MonoBehaviour
                 if (!player.attack3Used)
                 {
                     DisplayMessage("Player uses Psycho Rift!");
+                    if (physicParticlePrefab != null)
+                    {
+                        GameObject physicEffect = Instantiate(
+                            physicParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
                     player.animator.SetTrigger("psycho");
                     yield return new WaitForSeconds(1f);
                     finalDamage = player.ThirdAttack(bot, out isCrit);
@@ -192,7 +238,7 @@ public class BattleSystem : MonoBehaviour
                     if (isCrit) DisplayMessage("CRITICAL ATTACK!");
                     player.shieldActive = true;
                     DisplayMessage("Player is shielded!");
-                    player.attack3Used = true;
+                    player.attack3Used = true;                   
                     player.animator.ResetTrigger("psycho");
                 }
                 else
@@ -206,6 +252,14 @@ public class BattleSystem : MonoBehaviour
                 if (!player.attack4Used)
                 {
                     DisplayMessage("Player uses Marina Dash!");
+                    if (waterParticlePrefab != null)
+                    {
+                        GameObject waterEffect = Instantiate(
+                            waterParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
                     player.animator.SetTrigger("marina");
                     yield return new WaitForSeconds(1f);
                     finalDamage = player.FourthAttack(bot, out isCrit);
@@ -245,6 +299,14 @@ public class BattleSystem : MonoBehaviour
     IEnumerator PlayerChargeAttackTurn()
     {
         DisplayMessage("Player uses Celestial Blast!");
+        if (celestialParticlePrefab != null)
+                    {
+                        GameObject celestialEffect = Instantiate(
+                            celestialParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
         yield return new WaitForSeconds(1f);
 
         bool isCrit;
@@ -267,6 +329,14 @@ public class BattleSystem : MonoBehaviour
         {
             bot.Heal(30);
             DisplayMessage("Bot healed by 30 health.");
+            if (bothealParticlePrefab != null)
+                    {
+                        GameObject healEffect = Instantiate(
+                            bothealParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
             yield return new WaitForSeconds(1f);
             DisplayMessage($"Bot's Current Health: {bot.Health}");
             botHealCounter++;
@@ -278,6 +348,14 @@ public class BattleSystem : MonoBehaviour
             if (Random.value > 0.1f)
             {
                 DisplayMessage("Bot uses Celestial Blast!");
+                if (botcelestialParticlePrefab != null)
+                    {
+                        GameObject celestialEffect = Instantiate(
+                            botcelestialParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
                 yield return new WaitForSeconds(1f);
                 bool isCrit;
                 int finalDamage = bot.ChargeAttack(player, out isCrit);
@@ -318,7 +396,15 @@ public class BattleSystem : MonoBehaviour
         switch (attackType)
         {
             case 1:
-                DisplayMessage("Bot uses Attack 1!");
+                DisplayMessage("Bot uses Blaze Overdrive!");
+                if (botfireParticlePrefab != null)
+                    {
+                        GameObject fireEffect = Instantiate(
+                            botfireParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.Attack(player, out isCrit);
                 DisplayMessage($"Player takes {finalDamage} damage!");
@@ -326,7 +412,15 @@ public class BattleSystem : MonoBehaviour
                 break;
 
             case 2:
-                DisplayMessage("Bot uses Attack 2!");
+                DisplayMessage("Bot uses Thorn Slash!");
+                if (botpoisonParticlePrefab != null)
+                    {
+                        GameObject poisonEffect = Instantiate(
+                            botpoisonParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.SecondAttack(player, out isCrit);
                 DisplayMessage($"Player takes {finalDamage} damage!");
@@ -334,7 +428,15 @@ public class BattleSystem : MonoBehaviour
                 break;
 
             case 3:
-                DisplayMessage("Bot uses Attack 3!");
+                DisplayMessage("Bot uses Psycho Rift!");
+                if (botphysicParticlePrefab != null)
+                    {
+                        GameObject physicEffect = Instantiate(
+                            botphysicParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.ThirdAttack(player, out isCrit);
                 DisplayMessage($"Player takes {finalDamage} damage!");
@@ -342,7 +444,15 @@ public class BattleSystem : MonoBehaviour
                 break;
 
             case 4:
-                DisplayMessage("Bot uses Attack 4!");
+                DisplayMessage("Bot uses Marina Dash!");
+                if (botwaterParticlePrefab != null)
+                    {
+                        GameObject waterEffect = Instantiate(
+                            botwaterParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.FourthAttack(player, out isCrit);
                 DisplayMessage($"Player takes {finalDamage} damage!");
