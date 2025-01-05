@@ -61,5 +61,6 @@ public class PlayerMovement : MonoBehaviour
 
         // Animations
         animator.SetBool("isRun", Input.GetAxisRaw("Vertical") != 0);
+        animator.SetBool("isSide", Input.GetAxisRaw("Horizontal") != 0);
     }
 }
