@@ -20,7 +20,7 @@ public class NextSceneScript : MonoBehaviour
 
     /// <summary>
     /// Loads the next scene by incrementing the scene number with a fade transition.
-    /// Defaults to a red fade color if none is provided.
+    /// Defaults to black fade color if none is provided.
     /// </summary>
     /// <param name="fadeColor">The color to use for the fade effect.</param>
     public void LoadNextScene(Color fadeColor = default)
@@ -33,12 +33,22 @@ public class NextSceneScript : MonoBehaviour
 
         // Increment scene number
         currentSceneNumber++;
+
+        // Check if we've reached "scene5" after finishing scene4 and its battle
+        if (currentSceneNumber == 5)
+        {
+            // Instead of scene5, go to EndingScene
+            TransitionManager.Instance.LoadSceneWithColorFade("EndingScene", fadeColor);
+            return;
+        }
+        
+
+        // Otherwise, build normal scene name
         string nextSceneName = "scene" + currentSceneNumber; // e.g., scene2, scene3, etc.
 
         // If the next scene name is "Battle", fade into it just like other scenes
         if (nextSceneName == "Battle")
         {
-            // Option A: Use the same fade color or pick another
             TransitionManager.Instance.LoadSceneWithColorFade("Battle", fadeColor);
             return;
         }

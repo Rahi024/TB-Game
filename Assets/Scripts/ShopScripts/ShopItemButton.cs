@@ -47,27 +47,29 @@ public class ShopItemButton : MonoBehaviour
     /// <summary>
     /// Called when the player clicks the "Purchase" button.
     /// </summary>
-    public void OnPurchaseButtonClicked()
+   public void OnPurchaseButtonClicked()
+{
+    if (CoinManager.Instance.totalCoins >= cost)
     {
-        if (CoinManager.Instance.totalCoins >= cost)
-        {
-            // Deduct coins and apply the upgrade
-            CoinManager.Instance.RemoveCoins(cost);
-            ApplyUpgrade();
+        // Deduct coins and apply the upgrade
+        CoinManager.Instance.RemoveCoins(cost);
+        ApplyUpgrade();
 
-            // Update the coin display in the UI
-            shopManager.UpdateCoinDisplay();
+        // Update the coin display in the UI
+        shopManager.UpdateCoinDisplay();
 
-            // Increase cost for next time
-            cost *= costMultiplier;
-            if (costText)
-                costText.text = cost.ToString();
-        }
-        else
-        {
-            shopManager.ShowCostDisplay($"Not enough coins to buy {nameText.text}!");
-        }
+        // Increase cost for next time
+        cost *= costMultiplier;
+
+        // Update the cost display in the shop manager to reflect the new price
+        shopManager.UpdateNextSaleCosts();
     }
+    else
+    {
+        shopManager.ShowCostDisplay($"Not enough coins to buy {nameText.text}!");
+    }
+}
+
 
     /// <summary>
     /// Applies the upgrade and shows the "Used X coins, added Y" message on screen.
