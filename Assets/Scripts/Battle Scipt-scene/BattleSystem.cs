@@ -185,7 +185,7 @@ public class BattleSystem : MonoBehaviour
                 finalDamage = player.Attack(bot, out isCrit);
                 DisplayMessage($"Renji takes {finalDamage} damage!");
                 if (isCrit) DisplayMessage("CRITICAL ATTACK!");
-                bot.ApplyBurn(5000, 3);
+                bot.ApplyBurn(5, 3);
                 DisplayMessage("Renji is burned for 3 turns!");
                 player.animator.ResetTrigger("blaze");
                 break;
