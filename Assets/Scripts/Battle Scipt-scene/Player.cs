@@ -1,8 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class Player : MonoBehaviour
 {
+    //Animation
+    public Animator animator;
+
     // Public fields for player health and damage values
     public int Health = 200;  
     public int maxHealth = 200;  
@@ -20,6 +24,11 @@ public class Player : MonoBehaviour
     // Shield status
     public bool shieldActive = false;
     public float shieldReduction = 0.5f; // 50% damage reduction
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     // Standard attack method that deals damage to the bot
     public int Attack(Bot bot, out bool isCrit)

@@ -3,8 +3,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+[RequireComponent(typeof(Animator))]
 public class BattleSystem : MonoBehaviour
 {
+    //Reference for animator
+    public Animator animator;
+
     // Public references to Player and Bot objects
     public Player player;
     public Bot bot;
@@ -28,6 +32,20 @@ public class BattleSystem : MonoBehaviour
     public GameOverScript gameOverScript;
     private bool isPlayerBusy = false;
 
+    public GameObject poisonParticlePrefab;
+    public GameObject physicParticlePrefab;
+    public GameObject waterParticlePrefab;
+    public GameObject fireParticlePrefab;
+    public GameObject celestialParticlePrefab;
+    public GameObject healParticlePrefab;
+
+    public GameObject botpoisonParticlePrefab;
+    public GameObject botphysicParticlePrefab;
+    public GameObject botwaterParticlePrefab;
+    public GameObject botfireParticlePrefab;
+    public GameObject botcelestialParticlePrefab;
+    public GameObject bothealParticlePrefab;
+
     void Awake()
     {
         // Apply any purchased upgrades before starting the game
@@ -37,6 +55,7 @@ public class BattleSystem : MonoBehaviour
     void Start()
     {
         StartCoroutine(BattleLoop());
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -70,7 +89,7 @@ public class BattleSystem : MonoBehaviour
         {
             if (playerTurn)
             {
-                DisplayMessage("Player turn to select a move!");
+                DisplayMessage("Erin turn to select a move!");
                 yield return new WaitUntil(() => !playerTurn);
             }
             else
@@ -78,11 +97,11 @@ public class BattleSystem : MonoBehaviour
                 int dotDamage = bot.ApplyDotEffects();
                 if (dotDamage > 0)
                 {
-                    DisplayMessage($"Bot takes {dotDamage} status effect damage!");
+                    DisplayMessage($"Renji takes {dotDamage} status effect damage!");
                     yield return new WaitForSeconds(1f);
                 }
 
-                DisplayMessage("Bot turn to select a move!");
+                DisplayMessage("Renji turn to select a move!");
                 yield return StartCoroutine(BotTurn());
                 playerTurn = true;
             }
@@ -114,9 +133,17 @@ public class BattleSystem : MonoBehaviour
             isPlayerBusy = true;
 
             player.Heal(30);
-            DisplayMessage("Player healed by 30 health.");
+            DisplayMessage("Erin healed by 30 health.");
+            if (healParticlePrefab != null)
+                    {
+                        GameObject healEffect = Instantiate(
+                            healParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
             yield return new WaitForSeconds(1f);
-            DisplayMessage($"Player's Current Health: {player.Health}");
+            DisplayMessage($"Erin's Current Health: {player.Health}");
             playerHealCounter++;
             CheckBattleOutcome();
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
@@ -126,12 +153,12 @@ public class BattleSystem : MonoBehaviour
         }
         else if (player.Health >= player.maxHealth)
         {
-            DisplayMessage("Player is already at full health!");
+            DisplayMessage("Erin is already at full health!");
             yield return new WaitForSeconds(1f);
         }
         else
         {
-            DisplayMessage("Player has no more heals available!");
+            DisplayMessage("Erin has no more heals available!");
             yield return new WaitForSeconds(1f);
         }
     }
@@ -144,26 +171,46 @@ public class BattleSystem : MonoBehaviour
         switch (attackType)
         {
             case 1:
-                DisplayMessage("Player uses Blaze Overdrive!");
+                DisplayMessage("Erin uses Blaze Overdrive!");
+                if (fireParticlePrefab != null)
+                    {
+                        GameObject fireEffect = Instantiate(
+                            fireParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
+                player.animator.SetTrigger("blaze");
                 yield return new WaitForSeconds(1f);
                 finalDamage = player.Attack(bot, out isCrit);
-                DisplayMessage($"Bot takes {finalDamage} damage!");
+                DisplayMessage($"Renji takes {finalDamage} damage!");
                 if (isCrit) DisplayMessage("CRITICAL ATTACK!");
                 bot.ApplyBurn(5000, 3);
-                DisplayMessage("Bot is burned for 3 turns!");
+                DisplayMessage("Renji is burned for 3 turns!");
+                player.animator.ResetTrigger("blaze");
                 break;
 
             case 2:
                 if (!player.attack2Used)
                 {
-                    DisplayMessage("Player uses Thorn Slash!");
+                    DisplayMessage("Erin uses Thorn Slash!");
+                    if (poisonParticlePrefab != null)
+                    {
+                        GameObject poisonEffect = Instantiate(
+                            poisonParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
+                    player.animator.SetTrigger("thorn");
                     yield return new WaitForSeconds(1f);
                     finalDamage = player.SecondAttack(bot, out isCrit);
-                    DisplayMessage($"Bot takes {finalDamage} damage!");
+                    DisplayMessage($"Renji takes {finalDamage} damage!");
                     if (isCrit) DisplayMessage("CRITICAL ATTACK!");
                     bot.ApplyPoison(3, 5);
-                    DisplayMessage("Bot is poisoned (3 damage for 5 turns)!");
+                    DisplayMessage("Renji is poisoned (3 damage for 5 turns)!");
                     player.attack2Used = true;
+                    player.animator.ResetTrigger("thorn");
                 }
                 else
                 {
@@ -175,14 +222,24 @@ public class BattleSystem : MonoBehaviour
             case 3:
                 if (!player.attack3Used)
                 {
-                    DisplayMessage("Player uses Psycho Rift!");
+                    DisplayMessage("Erin uses Psycho Rift!");
+                    if (physicParticlePrefab != null)
+                    {
+                        GameObject physicEffect = Instantiate(
+                            physicParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
+                    player.animator.SetTrigger("psycho");
                     yield return new WaitForSeconds(1f);
                     finalDamage = player.ThirdAttack(bot, out isCrit);
-                    DisplayMessage($"Bot takes {finalDamage} damage!");
+                    DisplayMessage($"Renji takes {finalDamage} damage!");
                     if (isCrit) DisplayMessage("CRITICAL ATTACK!");
                     player.shieldActive = true;
-                    DisplayMessage("Player is shielded!");
-                    player.attack3Used = true;
+                    DisplayMessage("Erin is shielded!");
+                    player.attack3Used = true;                   
+                    player.animator.ResetTrigger("psycho");
                 }
                 else
                 {
@@ -194,13 +251,23 @@ public class BattleSystem : MonoBehaviour
             case 4:
                 if (!player.attack4Used)
                 {
-                    DisplayMessage("Player uses Marina Dash!");
+                    DisplayMessage("Erin uses Marina Dash!");
+                    if (waterParticlePrefab != null)
+                    {
+                        GameObject waterEffect = Instantiate(
+                            waterParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
+                    player.animator.SetTrigger("marina");
                     yield return new WaitForSeconds(1f);
                     finalDamage = player.FourthAttack(bot, out isCrit);
-                    DisplayMessage($"Bot takes {finalDamage} damage!");
+                    DisplayMessage($"Renji takes {finalDamage} damage!");
                     if (isCrit) DisplayMessage("CRITICAL ATTACK!");
-                    DisplayMessage($"Bot's Current Health: {bot.Health}");
+                    DisplayMessage($"Renji's Current Health: {bot.Health}");
                     player.attack4Used = true;
+                    player.animator.ResetTrigger("marina");
                 }
                 else
                 {
@@ -219,7 +286,7 @@ public class BattleSystem : MonoBehaviour
         if (normalAttackCounter >= 3)
         {
             chargeAttackAvailable = true;
-            DisplayMessage("Player's Celestial Blast is now available!");
+            DisplayMessage("Erin's Celestial Blast is now available!");
             yield return new WaitForSeconds(1f);
         }
 
@@ -231,13 +298,21 @@ public class BattleSystem : MonoBehaviour
 
     IEnumerator PlayerChargeAttackTurn()
     {
-        DisplayMessage("Player uses Celestial Blast!");
+        DisplayMessage("Erin uses Celestial Blast!");
+        if (celestialParticlePrefab != null)
+                    {
+                        GameObject celestialEffect = Instantiate(
+                            celestialParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
         yield return new WaitForSeconds(1f);
 
         bool isCrit;
         int finalDamage = player.ChargeAttack(bot, out isCrit);
 
-        DisplayMessage($"Bot takes {finalDamage} damage!");
+        DisplayMessage($"Renji takes {finalDamage} damage!");
         if (isCrit) DisplayMessage("CRITICAL ATTACK!");
         chargeAttackAvailable = false;
         normalAttackCounter = 0;
@@ -253,9 +328,17 @@ public class BattleSystem : MonoBehaviour
         if (botHealCounter < 2 && bot.Health <= 30 && !botHasHealed)
         {
             bot.Heal(30);
-            DisplayMessage("Bot healed by 30 health.");
+            DisplayMessage("Renji healed by 30 health.");
+            if (bothealParticlePrefab != null)
+                    {
+                        GameObject healEffect = Instantiate(
+                            bothealParticlePrefab, 
+                            bot.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
             yield return new WaitForSeconds(1f);
-            DisplayMessage($"Bot's Current Health: {bot.Health}");
+            DisplayMessage($"Renji's Current Health: {bot.Health}");
             botHealCounter++;
             botHasHealed = true;
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
@@ -264,12 +347,20 @@ public class BattleSystem : MonoBehaviour
         {
             if (Random.value > 0.1f)
             {
-                DisplayMessage("Bot uses Celestial Blast!");
+                DisplayMessage("Renji uses Celestial Blast!");
+                if (botcelestialParticlePrefab != null)
+                    {
+                        GameObject celestialEffect = Instantiate(
+                            botcelestialParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
                 yield return new WaitForSeconds(1f);
                 bool isCrit;
                 int finalDamage = bot.ChargeAttack(player, out isCrit);
-                DisplayMessage($"Player takes {finalDamage} damage!");
-                if (isCrit) DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                DisplayMessage($"Erin takes {finalDamage} damage!");
+                if (isCrit) DisplayMessage("CRITICAL ATTACK BY RENJI!");
                 botChargeAttackAvailable = false;
                 botNormalAttackCounter = 0;
             }
@@ -289,7 +380,7 @@ public class BattleSystem : MonoBehaviour
         if (botNormalAttackCounter >= 3)
         {
             botChargeAttackAvailable = true;
-            DisplayMessage("Bot's Celestial Blast is now available!");
+            DisplayMessage("Renji's Celestial Blast is now available!");
             yield return new WaitForSeconds(1f);
         }
 
@@ -305,35 +396,75 @@ public class BattleSystem : MonoBehaviour
         switch (attackType)
         {
             case 1:
-                DisplayMessage("Bot uses Attack 1!");
+                DisplayMessage("Renji uses Blaze Overdrive!");
+                if (botfireParticlePrefab != null)
+                    {
+                        GameObject fireEffect = Instantiate(
+                            botfireParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
+                bot.animator.SetTrigger("blaze");
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.Attack(player, out isCrit);
-                DisplayMessage($"Player takes {finalDamage} damage!");
-                if (isCrit) DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                DisplayMessage($"Erin takes {finalDamage} damage!");
+                if (isCrit) DisplayMessage("CRITICAL ATTACK BY RENJI!");
+                player.animator.ResetTrigger("blaze");
                 break;
 
             case 2:
-                DisplayMessage("Bot uses Attack 2!");
+                DisplayMessage("Renji uses Thorn Slash!");
+                if (botpoisonParticlePrefab != null)
+                    {
+                        GameObject poisonEffect = Instantiate(
+                            botpoisonParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
+                bot.animator.SetTrigger("thorn");
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.SecondAttack(player, out isCrit);
-                DisplayMessage($"Player takes {finalDamage} damage!");
-                if (isCrit) DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                DisplayMessage($"Erin takes {finalDamage} damage!");
+                if (isCrit) DisplayMessage("CRITICAL ATTACK BY RENJI!");
+                player.animator.ResetTrigger("thorn");
                 break;
 
             case 3:
-                DisplayMessage("Bot uses Attack 3!");
+                DisplayMessage("Renji uses Psycho Rift!");
+                if (botphysicParticlePrefab != null)
+                    {
+                        GameObject physicEffect = Instantiate(
+                            botphysicParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
+                bot.animator.SetTrigger("psycho");
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.ThirdAttack(player, out isCrit);
-                DisplayMessage($"Player takes {finalDamage} damage!");
-                if (isCrit) DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                DisplayMessage($"Erin takes {finalDamage} damage!");
+                if (isCrit) DisplayMessage("CRITICAL ATTACK BY RENJI!");
+                player.animator.ResetTrigger("psycho");
                 break;
 
             case 4:
-                DisplayMessage("Bot uses Attack 4!");
+                DisplayMessage("Renji uses Marina Dash!");
+                if (botwaterParticlePrefab != null)
+                    {
+                        GameObject waterEffect = Instantiate(
+                            botwaterParticlePrefab, 
+                            player.transform.position, 
+                            Quaternion.identity
+                        );
+                    }
+                bot.animator.SetTrigger("marina");
                 yield return new WaitForSeconds(1f);
                 finalDamage = bot.FourthAttack(player, out isCrit);
-                DisplayMessage($"Player takes {finalDamage} damage!");
-                if (isCrit) DisplayMessage("CRITICAL ATTACK BY THE BOT!");
+                DisplayMessage($"Erin takes {finalDamage} damage!");
+                if (isCrit) DisplayMessage("CRITICAL ATTACK BY RENJI!");
+                player.animator.ResetTrigger("marina");
                 break;
 
             default:
@@ -352,7 +483,7 @@ public class BattleSystem : MonoBehaviour
         if (player.Health <= 0)
         {
             player.Health = 0;
-            DisplayMessage("Player Lost The Battle!");
+            DisplayMessage("Erin Lost The Battle!");
             battleOver = true;
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
             gameOverScript.gameOver();
@@ -361,7 +492,7 @@ public class BattleSystem : MonoBehaviour
         else if (bot.Health <= 0)
         {
             bot.Health = 0;
-            DisplayMessage("Bot Lost The Battle!");
+            DisplayMessage("Renji Lost The Battle!");
             battleOver = true;
             FindObjectOfType<BattleUI>().UpdateHealthSliders();
 

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ChangeScene_OnKeyPress : MonoBehaviour
 {
@@ -58,13 +57,14 @@ public class ChangeScene_OnKeyPress : MonoBehaviour
     {
         if (kc != null)
         {
-            // If this trigger is just a key pickup
+            // If this trigger is for a key pickup (not the boss door)
             if (!isBossTrigger)
             {
                 // Play pickup sound
                 if (pickupSound != null)
                     AudioSource.PlayClipAtPoint(pickupSound, transform.position);
 
+                // Increment key count
                 kc.IncrementKeyCount();
 
                 // Remove the key object and its UI prompt
@@ -77,8 +77,12 @@ public class ChangeScene_OnKeyPress : MonoBehaviour
                 // Boss door logic
                 if (kc.keyCount == kc.GetTotalKeysNeeded())
                 {
-                    kc.keyCount = 0; // Reset key count, if that's your game logic
-                    SceneManager.LoadScene("Battle"); 
+                    kc.keyCount = 0; // Reset key count if that's your desired logic
+
+                    // *** Use the TransitionManager instead of SceneManager.LoadScene ***
+                    // Fade into the "Battle" scene. 
+                    // You can change Color.black to whichever color you want for the fade.
+                    TransitionManager.Instance.LoadSceneWithColorFade("Battle", Color.black);
                 }
                 else
                 {
