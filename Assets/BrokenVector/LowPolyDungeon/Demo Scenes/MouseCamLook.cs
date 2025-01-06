@@ -1,28 +1,36 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Cinemachine;
 
-public class MouseCamLook : MonoBehaviour
+public class CharacterFaceCameraDirection : MonoBehaviour
 {
-    public float mouseSensitivity = 100f;
-    public Transform playerBody;
-    float xRotation = 0f;
+    [Header("References")]
+    public Transform playerBody;            // The transform that should rotate (your character model/root)
+    public CinemachineFreeLook freeLookCam; // Drag your Cinemachine FreeLook here
 
-    void Start()
+    [Header("Settings")]
+    public float rotationSpeed = 5f; // How quickly to slerp the character’s rotation
+
+    void LateUpdate()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-    }
+        if (playerBody == null || freeLookCam == null) return;
 
-    void Update()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        // 1) Get the camera’s forward direction from the FreeLookCam
+        // Note: freeLookCam.transform is the actual camera transform at runtime
+        Vector3 camForward = freeLookCam.transform.forward;
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        // 2) Ignore any vertical tilt by setting y = 0
+        camForward.y = 0f;
+        camForward.Normalize();
 
-        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-
-        playerBody.Rotate(Vector3.up * mouseX);
+        // 3) If there is a valid direction, smoothly rotate the player to face it
+        if (camForward.sqrMagnitude > 0.0001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(camForward, Vector3.up);
+            playerBody.rotation = Quaternion.Slerp(
+                playerBody.rotation, 
+                targetRotation, 
+                rotationSpeed * Time.deltaTime
+            );
+        }
     }
 }
